@@ -1,0 +1,52 @@
+#include <TFT_eSPI.h>  // Include the TFT_eSPI library
+#include <HB9IIUOrbitronMed8pt.h>
+
+// TFT Display Setup
+TFT_eSPI tft = TFT_eSPI(); // Create TFT display object
+
+void scrollText(String text, int y, int delayMs);
+
+
+
+// Initialize the TFT screen
+void setup() {
+  Serial.begin(115200);  // Start Serial Monitor
+
+  // Initialize TFT
+  tft.init();
+  tft.setRotation(1);           // Set screen rotation (adjust as needed)
+  tft.fillScreen(TFT_BLACK);    // Fill the screen with black at the start
+
+  // Set up font and text color
+  tft.setFreeFont(&Orbitron_Medium8pt7b);  // Choose a font
+  tft.setTextColor(TFT_WHITE, TFT_BLACK);  // White text on black background
+
+  // Test scrolling text
+  scrollText("This is a test scrolling message", 200, 50);  // Scroll the message at y=200
+}
+
+// Function to scroll text horizontally
+void scrollText(String text, int y, int delayMs) {
+  int textWidth = tft.textWidth(text);  // Get the width of the text to be scrolled
+  int x = 320; // Start position at the far right of the screen
+
+  // Loop until the text has scrolled out of view
+  while (true) {
+    tft.fillRect(0, y, 320, 40, TFT_BLACK); // Clear only the area where the text is displayed
+    tft.setCursor(x, y);  // Set the new cursor position for the text
+    tft.print(text);       // Draw the text
+
+    // Move the text to the left
+    x--;
+
+    if (x < -textWidth) {
+      x = 320;  // Reset text position when it has fully scrolled off the screen
+    }
+
+    delay(delayMs); // Delay for smooth scrolling
+  }
+}
+
+void loop() {
+  // Nothing to do here for the scrolling test, as it's handled in setup()
+}

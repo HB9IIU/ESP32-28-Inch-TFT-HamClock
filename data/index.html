@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html class="bg-dark" lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+        <link rel="icon" type="image/x-icon" href="/favicon.ico">
+        <title>HamClock</title>
+        <!-- Bootstrap 5 CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+        <!-- iro.js CDN -->
+        <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
+        <style>#colorPicker { margin: 0 auto; display: block; }</style>
+        <link href="https://fonts.googleapis.com/css?family=Victor+Mono&display=swap" rel="stylesheet">
+        <style>@font-face { font-family: 'Digital7'; src: url('/fonts/digital.ttf') format('truetype'); } @font-face { font-family: 'Digital7Italic'; src: url('/fonts/digital7monoitalic.ttf') format('truetype'); } /* Style for the selected image */.selected-image { border-color: #76c72a;  /* Green border for the selected image */ transform: scale(1.05);  /* Slightly scale up the selected image for emphasis */ } .rounded-image-wrapper { border-radius: 12px; overflow: hidden; border: 4px solid #444; transition: border-color 0.3s ease, transform 0.3s ease; } .rounded-image-wrapper img { display: block; width: 100%; height: auto; margin-bottom: 0; } .rounded-image-wrapper.selected-image { border-color: #76c72a; transform: scale(1.05); } /* Apply Digital7 font and remove number input arrows */input[type="number"] { font-family: 'Digital7', monospace; font-size: 36px; text-align: center; width: 100%; border-radius: 8px; border: 2px solid #444; background-color: #000; color: #ffffff; -moz-appearance: textfield;  /* Firefox */ padding-top: 0px;  /* Top padding */ padding-right: 0;  /* Right padding */ padding-bottom: 0px;  /* Bottom padding */ padding-left: 0;  /* Left padding */ line-height: 36px;  /* Match line height to font size */ } input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none;  /* Chrome, Safari, Edge */ margin: 0; } .time-container { border: 4px solid #000; border-radius: 20px; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px; display: inline-block; text-align: center;  /* 🔧 Add these lines: */ line-height: 1;  /* Remove extra line spacing */ margin: 0;  /* Eliminate default margins */ vertical-align: middle;  /* Align better inside containers */ } .form-check { display: flex; align-items: center; margin-bottom: 10px;  /* Spacing between lines */ } .form-check input { margin-right: 10px;  /* Space between radio button and label */ } .color-picker-container { display: inline-block; margin-left: 10px; } /* Create space between the two time containers */.time-container-wrapper { display: flex; gap: 30px;  /* Space between local and UTC time containers */ } /* Scrolling banner animation */.weather-banner { white-space: nowrap; overflow: hidden; width: 100%;  /* Full width container */ display: flex; justify-content: center; margin-top: 20px; } .weather-banner-text { animation: scrollText 10s linear infinite; font-size: 30px; } /* Define the scrolling animation */@keyframes scrollText { 0% {  transform: translateX(100%); }  100% {  transform: translateX(-100%); } } .modal.fade .modal-dialog { transition: transform 0.3s ease-out, opacity 0.3s ease-out; }</style>
+        <link href="https://fonts.googleapis.com" rel="preconnect">
+        <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+        <link href="https://fonts.googleapis.com/css?family=Orbitron&display=swap" rel="stylesheet">
+        <link as="font" crossorigin="anonymous" href="/fonts/digital7monoitalic.ttf" rel="preload" type="font/ttf">
+    </head>
+    <body class="bg-dark">
+        <div class="bg-dark container py-5">
+            <div class="row" data-pg-collapsed>
+                <p class="text-center text-white" style="font-family: 'Orbitron', sans-serif; font-size: 40px; font-weight: 700; margin-bottom: 30px; letter-spacing: 5px;">
+            HB9IIU HamClock Configurator</p>
+            </div>
+            <div class="row" data-pg-collapsed>
+                <!-- First Column: Time Display -->
+                <div class="col-md-12">
+                    <div class="container" data-pg-collapsed>
+                        <!-- Time Containers with Flex to create a gap -->
+                        <div class="row" data-pg-collapsed>
+                            <div class="col-md-6">
+                                <p class="text-center text-white" style="font-size: 26px; font-family: 'Orbitron', sans-serif; font-weight: 400;">Local
+                            Time</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-center text-white" style="font-size: 26px; font-family: 'Orbitron', sans-serif; font-weight: 400;">UTC Time</p>
+                            </div>
+                        </div>
+                        <div class="row" data-pg-collapsed>
+                            <div style="text-align: center;" class="col-md-5">
+                                <div class="time-container" id="localTime" style="font-size: 80px; font-weight: normal; font-family: Digital7;">00:00:00
+</div>
+                            </div>
+                            <div class="col-md-2 d-flex justify-content-center align-items-center" style="height: 100%;"><a href="https://github.com/HB9IIU/ESP32-CYD-HamClock" target="_blank" rel="noopener noreferrer"> <img src="github.png" alt="GitHub Logo" style="max-width: 100%; height: auto;"> </a>
+                            </div>
+                            <div style="text-align: center;" class="col-md-5">
+                                <div class="time-container" id="utcTime" style="font-size: 80px; font-weight: normal; font-family: Digital7;">00:00:00
+</div>
+                            </div>
+                        </div>
+                        <div class="row" data-pg-collapsed>
+                            <div style="text-align: center;" class="col-md-5">
+                                <h3 class="text-center text-secondary" style="margin-top: -10px; font-family: 'Orbitron', sans-serif; font-size: 16px; text-align: center;"> <div contenteditable="true" id="columnTitleLocalTime" style="display: inline; background-color: black; color: white; padding: 0 5px; font-size: 16px; font-family: 'Orbitron', sans-serif;">
+                                        Column title
+</div> </h3>
+                            </div>
+                            <div style="text-align: center;" class="col-md-2">
+</div>
+                            <div style="text-align: center;" class="col-md-5">
+                                <h3 class="text-center text-secondary" style="margin-top: -10px; font-family: 'Orbitron', sans-serif; font-size: 16px; text-align: center;"> <div contenteditable="true" id="columnTitleUTCtime" style="display: inline; background-color: black; color: white; padding: 0 5px; font-size: 16px; font-family: 'Orbitron', sans-serif;">
+                                        Column title
+</div> </h3>
+                            </div>
+                        </div>
+                        <div class="row" data-pg-collapsed style="margin-top: 8px;">
+                            <div class="col-md-6 d-flex justify-content-center align-items-center" data-pg-collapsed>
+                                <div class="row" style="margin-top: 15px; text-align: center;">
+                                    <div class="col-md-6 d-flex justify-content-center">
+                                        <div class="form-check" style="font-size: 20px;">
+                                            <input class="form-check-input" id="line3" name="line" onclick="setColorTarget('localTimeDigits')" style="font-size: 18px;" type="radio" value="line3">
+                                            <label class="form-check-label text-white" for="line3" style="font-family: 'Orbitron', sans-serif; font-size: 18px;">
+                                                Digits
+</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 d-flex justify-content-center">
+                                        <div class="form-check" style="font-size: 20px;">
+                                            <input class="form-check-input" id="line4" name="line" onclick="setColorTarget('localTimeFrame')" style="font-size: 18px;" type="radio" value="line4">
+                                            <label class="form-check-label text-white" for="line4" style="font-size: 18px; font-family: 'Orbitron', sans-serif;">
+                                                Frame
+</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 d-flex justify-content-center align-items-center" data-pg-collapsed>
+                                <div class="row" data-pg-collapsed style="margin-top: 15px;">
+                                    <div class="col-md-6 d-flex justify-content-center">
+                                        <div class="form-check d-flex justify-content-center">
+                                            <input class="form-check-input" id="line5" name="line" onclick="setColorTarget('utcTimeDigits')" style="font-size: 18px;" type="radio" value="line5">
+                                            <label class="form-check-label text-white" for="line5" style="font-size: 18px; font-family: 'Orbitron', sans-serif;">
+                                                Digits
+</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 d-flex justify-content-center">
+                                        <div class="form-check d-flex justify-content-center">
+                                            <input class="form-check-input" id="line6" name="line" onclick="setColorTarget('utcTimeFrame')" style="font-size: 18px;" type="radio" value="line6">
+                                            <label class="form-check-label text-white" for="line6" style="font-size: 18px; font-family: 'Orbitron', sans-serif;">
+                                                Frame
+</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" data-pg-collapsed>
+                            <div class="col-md-6 float-none text-center">
+                                <input class="form-check-input" id="thinBorderCheckbox" onclick="toggleBorderThickness()" style="font-size: 18px;" type="checkbox">
+                                <label class="form-check-label text-white" for="thinBorderCheckbox" style="font-size: 18px; font-family: 'Orbitron', sans-serif;">
+                                    Thin Border
+</label>
+                            </div>
+                            <div class="col-md-6 float-none text-center">
+                                <input class="form-check-input" id="italicFontsBorderCheckbox" onclick="sendItalicFontSetting()" style="font-size: 18px;" type="checkbox">
+                                <label class="form-check-label text-white" for="italicFontsBorderCheckbox" style="font-size: 18px; font-family: 'Orbitron', sans-serif;">
+                                    Italic Fonts
+</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- Outer container with 50px horizontal margin -->
+                            <div class="col-12" style="padding: 0 95px;">
+                                <div class="text-white weather-banner" style="font-family: 'Orbitron', sans-serif; background-color: #000;">
+                                    <div class="weather-banner-text" id="weatherBannerText" style="color: #915656; background-color: #000;">
+                                        Local Weather Information and Astronomical Data
+</div>
+                                </div>
+                            </div>
+                            <!-- Slider label and radio -->
+                            <div class="form-check d-flex justify-content-center mt-3">
+                                <input class="form-check-input" id="line7" name="line" onclick="setColorTarget('weatherBannerText')" style="font-size: 18px;" type="radio" value="line7">
+                                <label class="form-check-label text-white" for="line7" style="font-size: 18px; font-family: 'Orbitron', sans-serif;">
+                                    Weather Info Banner
+</label>
+                            </div>
+                            <!-- Speed Slider Row -->
+                            <div class="col-md-12 text-center">
+                                <div class="row" style="margin-bottom: 20px; display: flex; justify-content: center;">
+                                    <input id="speedSlider" max="45" min="0" step="1" style="width: 80%; margin-top: 10px;" type="range" value="10">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" data-pg-collapsed>
+                            <div class="col-md-4 text-center">
+                                <p class="text-white" style="font-family: 'Orbitron', sans-serif; font-size: 22px;">Latitude</p>
+                                <input id="latitudeInput" style="font-family: 'Digital7'; width: 12ch; text-align: center; padding: 6px 12px; border-radius: 8px; border: 2px solid #444; background-color: #000; font-size: 36px; color: #ffffff;" type="number">
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <div class="color-picker-container" data-pg-collapsed id="colorPicker" style="display: inline-block;">
+                                    <div class="IroColorPicker" style="display: block;"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <p class="text-white" style="font-family: 'Orbitron', sans-serif; font-size: 22px;">
+                            Longitude</p>
+                                <input id="longitudeInput" style="font-family: 'Digital7'; font-size: 36px; width: 12ch; text-align: center; padding: 6px 12px; border-radius: 8px; border: 2px solid #444; background-color: #000; color: #ffffff;" type="number">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Second Column: Color Picker -->
+            </div>
+            <div class="row" data-pg-collapsed>
+                <div class="col-12" style="text-align: center;">
+</div>
+            </div>
+            <div class="row mt-4" data-pg-collapsed>
+                <div class="col-md-3 d-flex flex-column align-items-center">
+                    <div class="rounded-image-wrapper">
+                        <img alt="Boot Image 1" class="img-fluid" onclick="selectBootImage('logo1.png', this)" src="logo1.png" style="display: block; cursor: pointer;">
+                        <p class="selected-label" style="display: none; color: #f6f6f6; text-align: center; font-family: 'Orbitron', sans-serif; font-size: 13px;">
+                    Selected Splash Image</p>
+                    </div>
+                </div>
+                <div class="col-md-3 d-flex flex-column align-items-center">
+                    <div class="rounded-image-wrapper">
+                        <img alt="Boot Image 2" class="img-fluid" onclick="selectBootImage('logo2.png', this)" src="logo2.png" style="display: block; cursor: pointer;">
+                        <p class="selected-label" style="display: none; color: #f6f6f6; text-align: center; font-family: 'Orbitron', sans-serif; font-size: 13px;">
+                    Selected Splash Image</p>
+                    </div>
+                </div>
+                <div class="col-md-3 d-flex flex-column align-items-center">
+                    <div class="rounded-image-wrapper">
+                        <img alt="Boot Image 3" class="img-fluid" onclick="selectBootImage('logo3.png', this)" src="logo3.png" style="display: block; cursor: pointer;">
+                        <p class="selected-label" style="display: none; color: #f6f6f6; text-align: center; font-family: 'Orbitron', sans-serif; font-size: 13px;">
+                    Selected Splash Image</p>
+                    </div>
+                </div>
+                <div class="col-md-3 d-flex flex-column align-items-center">
+                    <div class="rounded-image-wrapper">
+                        <img alt="Boot Image 4" class="img-fluid" onclick="selectBootImage('logo4.png', this)" src="logo4.png" style="display: block; cursor: pointer;">
+                        <p class="selected-label" style="display: none; color: #f6f6f6; text-align: center; font-family: 'Orbitron', sans-serif; font-size: 13px;">
+                    Selected Splash Image</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 20px; display: flex; justify-content: center; margin-top: 20px;">
+                <div class="col-md-4" data-pg-collapsed>
+                    <p class="text-white" id="screenSaverLabel" style="font-family: 'Orbitron', sans-serif; margin-top: 10px;">
+                Screen Saver After: 5 min.</p>
+                </div>
+                <div class="col-md-8">
+                    <input id="screenSaverSlider" max="120" min="0" step="2" style="width:100%; margin-top: 10px;" type="range" value="5">
+                </div>
+            </div>
+            <div class="row" data-pg-collapsed>
+                <div class="text-center mt-4">
+                    <input type="file" id="imageUpload" accept="image/png" class="form-control d-none">
+                    <button id="uploadButton" class="btn btn-success mt-2">Upload Custom Splash Image -> PNG 320x240</button>
+                    <p id="uploadStatus" class="text-white mt-2" style="font-family: 'Orbitron', sans-serif;"></p>
+                    <!-- Spinner -->
+                    <div id="uploadSpinner" class="mt-3" style="display: none;">
+                        <div class="spinner-border text-success" role="status"><span class="visually-hidden">Uploading...</span>
+                        </div>
+                        <p class="text-white mt-2" style="font-family: 'Orbitron', sans-serif;">Uploading...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row" data-pg-collapsed>
+                <div class="text-center mt-4">
+                    <button class="btn btn-light px-4 py-2" id="saveAllButton" style="font-family: 'Orbitron', sans-serif;" type="button">
+                        Save All To Flash Memory
+</button>
+                </div>
+            </div>
+        </div>
+        <script>
+    const labelIdToTarget = {
+
+            columnTitleLocalTime: "localTimeLabel",
+            columnTitleUTCtime:
+                "utcTimeLabel"
+        }
+    ;
+
+
+    let saveRebootModalInstance;  // ✅ Global declaration
+    let currentDoubleFrame = false;
+
+
+    // Initialize iro.js
+    // Create one color picker for all elements
+    const colorPicker = new iro.ColorPicker("#colorPicker", {
+        width: 200,
+        color: "#76c72a"
+    });
+
+    // Initialize the target element for color change (initially set to localTimeDigits)
+    let currentTarget = 'localTimeDigits';
+
+    // Function to set the target element for color change
+    function setColorTarget(target) {
+        currentTarget = target;
+        console.log("Selected target: ", target);
+    }
+
+    colorPicker.on("color:change", function (color) {
+        const colorHex = color.hexString;
+        const rgb565 = rgb565FromHex(colorHex);
+
+        // Apply color visually
+        if (currentTarget === 'localTimeDigits') {
+            document.getElementById("localTime").style.color = colorHex;
+        } else if (currentTarget === 'localTimeFrame') {
+            document.getElementById("localTime").style.borderColor = colorHex;
+        } else if (currentTarget === 'utcTimeDigits') {
+            document.getElementById("utcTime").style.color = colorHex;
+        } else if (currentTarget === 'utcTimeFrame') {
+            document.getElementById("utcTime").style.borderColor = colorHex;
+        } else if (currentTarget === 'weatherBannerText') {
+            document.getElementById("weatherBannerText").style.color = colorHex;
+        }
+
+        // Send update to ESP32
+        fetch('/setcolor', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({target: currentTarget, color: rgb565})
+        }).then(response => {
+            if (!response.ok) throw new Error("Failed to send color");
+            console.log("✅ Color sent to ESP32:", currentTarget, colorHex);
+        }).catch(err => {
+            console.error("❌ Error sending color:", err);
+        });
+    });
+
+    function rgb565FromHex(hex) {
+        const r = parseInt(hex.substr(1, 2), 16);
+        const g = parseInt(hex.substr(3, 2), 16);
+        const b = parseInt(hex.substr(5, 2), 16);
+
+        const r5 = Math.round((r * 31) / 255) & 0x1F;
+        const g6 = Math.round((g * 63) / 255) & 0x3F;
+        const b5 = Math.round((b * 31) / 255) & 0x1F;
+
+        return (r5 << 11) | (g6 << 5) | b5;
+    }
+
+    // Function to format the time as HH:MM:SS
+    function formatTime(date, useUTC = false) {
+        let hours = useUTC ? date.getUTCHours() : date.getHours();
+        let minutes = useUTC ? date.getUTCMinutes() : date.getMinutes();
+        let seconds = useUTC ? date.getUTCSeconds() : date.getSeconds();
+
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+
+    // Function to update the current local and UTC time
+    function updateTime() {
+        const now = new Date();
+
+        const formattedLocalTime = formatTime(now, false); // Local
+        const formattedUtcTime = formatTime(now, true);    // UTC
+
+        document.getElementById("localTime").innerText = formattedLocalTime;
+        document.getElementById("utcTime").innerText = formattedUtcTime;
+    }
+
+
+    // Call updateTime every second to keep the times updated
+    setInterval(updateTime, 1000);
+    updateTime(); // Initial call to set the times immediately
+
+    // Function to toggle the border thickness
+    function toggleBorderThickness() {
+        const thinBorderCheckbox = document.getElementById("thinBorderCheckbox");
+
+        // Check the checkbox state and adjust border thickness
+        if (thinBorderCheckbox.checked) {
+            // Thin border
+            document.getElementById("localTime").style.borderWidth = "3px";
+            document.getElementById("utcTime").style.borderWidth = "3px";
+        } else {
+            // Thick border
+            document.getElementById("localTime").style.borderWidth = "6px";
+            document.getElementById("utcTime").style.borderWidth = "6px";
+        }
+    }
+
+    // Get the slider and the weather banner text
+    const speedSlider = document.getElementById('speedSlider');
+    const weatherBannerText = document.getElementById('weatherBannerText');
+
+    // Set the initial animation duration (10 seconds as default)
+    let speed = speedSlider.value;
+
+    // Update the animation duration of the scrolling text (inverted)
+    weatherBannerText.style.animationDuration = (31 - speed) + 's'; // Inverted slider logic
+
+    // Add an event listener to the slider to change the scroll speed
+    speedSlider.addEventListener('input', function () {
+        const sliderValue = parseInt(speedSlider.value); // 0–45
+        const bannerSpeed = Math.max(0, Math.min(40, 40 - sliderValue)); // 0 to 40 (for ESP32)
+
+        const animationDuration = 5 + (bannerSpeed / 40) * 40; // 5s to 45s (for web)
+        weatherBannerText.style.animationDuration = animationDuration + 's';
+
+        fetch('/setspeed', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({speed: bannerSpeed})
+        }).then(response => {
+            if (!response.ok) throw new Error("Failed to send speed");
+            console.log("🚀 Speed updated on ESP32:", bannerSpeed);
+        }).catch(err => {
+            console.error("❌ Error sending speed:", err);
+        });
+    });
+
+
+    function selectBootImage(imageFilename, clickedImage) {
+        // Show reboot modal
+        const rebootModal = new bootstrap.Modal(document.getElementById('rebootModal'));
+        document.getElementById('rebootLogoPreview').src = imageFilename; // 👈 Add this line
+        rebootModal.show();
+
+        // Deselect all, hide labels
+        const allWrappers = document.querySelectorAll('.rounded-image-wrapper');
+        allWrappers.forEach(wrapper => {
+            wrapper.classList.remove('selected-image');
+            const label = wrapper.querySelector('.selected-label');
+            if (label) label.style.display = 'none';
+        });
+
+        // Highlight selected image
+        const selectedWrapper = clickedImage.closest('.rounded-image-wrapper');
+        selectedWrapper.classList.add('selected-image');
+        const label = selectedWrapper.querySelector('.selected-label');
+        if (label) label.style.display = 'block';
+
+        // Save locally
+        localStorage.setItem('selectedBootImage', imageFilename);
+
+        // Send to ESP32
+        fetch('/setbootimage', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({bootImageId: imageFilename})
+        }).catch(err => {
+            console.error("❌ Error saving boot image:", err);
+        });
+
+        // Start pinging ESP32 until it’s back
+        const checkInterval = setInterval(() => {
+            fetch('/ping')
+                .then(res => {
+                    if (res.ok) {
+                        clearInterval(checkInterval);
+                        rebootModal.hide();
+                        console.log("🔁 Reloading page after boot image change...");
+                        location.reload(); // 🔄 Reload page
+                    }
+                })
+                .catch(() => {
+                    // ESP32 is still offline, do nothing
+                });
+        }, 2000); // check every 2 seconds
+    }
+
+
+    // Function to save the selected boot image to the ESP32
+    function saveBootImage(id) {
+        fetch('/setbootimage', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({bootImageId: id})
+        }).then(res => {
+            if (!res.ok) throw new Error("Failed to save boot image");
+            console.log("✅ Boot image ID saved:", id);
+        }).catch(err => {
+            console.error("❌ Error saving boot image:", err);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+
+        document.getElementById("thinBorderCheckbox").addEventListener("change", function () {
+            const thin = this.checked;
+
+            fetch("/setcolor", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    target: "doubleFrame",
+                    value: thin // Thin selected = doubleFrame = false
+                })
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error("Failed to update doubleFrame");
+                    console.log("✅ Border thickness updated:", thin ? "thin" : "thick");
+                })
+                .catch(err => {
+                    console.error("❌ Error updating doubleFrame:", err);
+                });
+        });
+
+
+        saveRebootModalInstance = bootstrap.Modal.getOrCreateInstance(document.getElementById("saveRebootModal"));
+
+        const screenSaverSlider = document.getElementById("screenSaverSlider");
+        const screenSaverLabel = document.getElementById("screenSaverLabel");
+
+        screenSaverSlider.addEventListener("input", () => {
+            const value = screenSaverSlider.value;
+            screenSaverLabel.innerText = `Screen Saver After: ${value} min.`;
+        });
+
+        try {
+            const response = await fetch('/config');
+            const config = await response.json();
+            console.log("📦 Received config from ESP32:", config); // 🧪 This will print the full config
+
+            document.getElementById("latitudeInput").value = config.latitude;
+            document.getElementById("longitudeInput").value = config.longitude;
+            document.getElementById("columnTitleLocalTime").innerText = config.localTimeLabel;
+            document.getElementById("columnTitleUTCtime").innerText = config.utcTimeLabel;
+            document.getElementById("italicFontsBorderCheckbox").checked = config.italicClockFonts;
+            document.getElementById("thinBorderCheckbox").checked = !config.doubleFrame;
+            toggleBorderThickness(); // 🟢 Apply the initial border thickness right away
+
+            const slider = document.getElementById("speedSlider");
+            slider.value = config.bannerSpeed;
+            weatherBannerText.style.animationDuration = (31 - config.bannerSpeed) + 's';
+
+            document.getElementById("weatherBannerText").style.color = hexFrom565(config.bannerColour);
+            timeoutMinutes = config.screenSaverTimeout ;
+            document.getElementById("screenSaverSlider").value = timeoutMinutes;
+            document.getElementById("screenSaverLabel").innerText = `Screen Saver After: ${timeoutMinutes} min.`;
+
+            if (config.startupLogo) {
+                const selectedImage = document.querySelector(`img[src="${config.startupLogo}"]`);
+                if (selectedImage) {
+                    selectedImage.parentElement.classList.add('selected-image');
+                    selectedImage.classList.add('selected-image');
+                } else {
+                    console.warn("⚠️ Unknown boot image:", config.startupLogo);
+                }
+            }
+
+            document.getElementById("localTime").style.borderColor = hexFrom565(config.localFrameColour);
+            document.getElementById("utcTime").style.borderColor = hexFrom565(config.utcFrameColour);
+            document.getElementById("localTime").style.color = hexFrom565(config.localTimeColour);
+            document.getElementById("utcTime").style.color = hexFrom565(config.utcTimeColour);
+
+            ['columnTitleLocalTime', 'columnTitleUTCtime'].forEach(id => {
+                const el = document.getElementById(id);
+                el.addEventListener('blur', () => {
+                    const target = labelIdToTarget[id];
+                    const value = el.innerText.trim();
+                    if (value !== '') {
+                        sendLabelUpdate(target, value);
+                    }
+                });
+                el.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        el.blur();
+                    }
+                });
+            });
+
+            ['latitudeInput', 'longitudeInput'].forEach(id => {
+                const el = document.getElementById(id);
+                el.addEventListener('blur', () => {
+                    sendPositionUpdate();
+                });
+                el.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        el.blur();
+                    }
+                });
+            });
+            function sendPositionUpdate() {
+                const latitude = document.getElementById("latitudeInput").value.trim();
+                const longitude = document.getElementById("longitudeInput").value.trim();
+
+                if (latitude !== '' && longitude !== '') {
+                    fetch('/setposition', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({latitude, longitude})
+                    })
+                        .then(res => {
+                            if (!res.ok) throw new Error("Failed to update position");
+                            console.log(`📍 Position updated: lat=${latitude}, lon=${longitude}`);
+
+                            // ✅ Now update the scroll text instead of reloading config
+                            updateScrollText();
+                        })
+                        .catch(err => {
+                            console.error("❌ Error during position update:", err);
+                        });
+                }
+            }
+
+
+
+
+
+            try {
+                const textResponse = await fetch('/scrolltext');
+                const bannerText = await textResponse.text();
+                document.getElementById("weatherBannerText").innerText = bannerText;
+            } catch (err) {
+                console.error("❌ Failed to fetch scrollText:", err);
+            }
+
+        } catch (err) {
+            console.error("❌ Failed to fetch config:", err);
+        }
+
+
+    });
+
+
+    function updateScrollText() {
+        fetch("/scrolltext")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.text();
+            })
+            .then(text => {
+                const banner = document.getElementById("weatherBannerText");
+                if (banner) {
+                    banner.innerText = text;
+                    console.log("📡 Scroll text updated:", text);
+                } else {
+                    console.warn("⚠️ Banner element not found.");
+                }
+            })
+            .catch(error => {
+                console.error("❌ Failed to fetch scroll text:", error);
+            });
+    }
+
+
+
+
+
+
+    // Helper to convert 16-bit RGB565 to hex string
+    function hexFrom565(rgb565) {
+        let r = ((rgb565 >> 11) & 0x1F) * 255 / 31;
+        let g = ((rgb565 >> 5) & 0x3F) * 255 / 63;
+        let b = (rgb565 & 0x1F) * 255 / 31;
+
+        r = Math.round(r);
+        g = Math.round(g);
+        b = Math.round(b);
+
+        return `#${[r, g, b].map(x => x.toString(16).padStart(2, '0')).join('')}`;
+    }
+
+
+
+
+    function sendLabelUpdate(id, value) {
+        fetch('/setlabel', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({target: id, value})  // <- FIXED KEY
+        }).then(res => {
+            if (!res.ok) throw new Error("Failed to update label");
+            console.log(`✅ Label updated: ${id} = "${value}"`);
+        }).catch(err => {
+            console.error("❌ Error updating label:", err);
+        });
+    }
+
+    function sendItalicFontSetting() {
+        const italic = document.getElementById("italicFontsBorderCheckbox").checked;
+
+        // Apply font style immediately
+        const newFont = italic ? "Digital7Italic" : "Digital7";
+        document.getElementById("localTime").style.fontFamily = newFont;
+        document.getElementById("utcTime").style.fontFamily = newFont;
+
+        // Send to ESP32
+        fetch("/setitalic", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({italicClockFonts: italic})
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to update italicClockFonts");
+                console.log("✏️ italicClockFonts updated:", italic);
+            })
+            .catch(err => console.error("❌ Error updating italicClockFonts:", err));
+    }
+
+
+    document.getElementById("saveAllButton").addEventListener("click", () => {
+        const config = {
+            latitude: parseFloat(document.getElementById("latitudeInput").value),
+            longitude: parseFloat(document.getElementById("longitudeInput").value),
+            localTimeLabel: document.getElementById("columnTitleLocalTime").innerText.trim(),
+            utcTimeLabel: document.getElementById("columnTitleUTCtime").innerText.trim(),
+            italicClockFonts: document.getElementById("italicFontsBorderCheckbox").checked,
+            doubleFrame: currentDoubleFrame,
+            bannerSpeed: parseInt(document.getElementById("speedSlider").value),
+            screenSaverTimeout: parseInt(document.getElementById("screenSaverSlider").value) * 60000
+        };
+
+        // ⚠️ FIX: Re-create the modal instance safely before calling .show()
+        saveRebootModalInstance = bootstrap.Modal.getOrCreateInstance(document.getElementById("saveRebootModal"));
+        saveRebootModalInstance.show();
+
+        fetch("/saveall", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(config)
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to save");
+                console.log("✅ Settings saved, ESP32 is rebooting...");
+
+                let attempts = 0;
+                const maxRetries = 30;
+
+                const interval = setInterval(() => {
+                    fetch("/ping")
+                        .then(r => {
+                            if (r.ok) {
+                                clearInterval(interval);
+                                console.log("✅ ESP32 is back online!");
+                                console.log("🔍 Attempting to hide modal...");
+
+                                const modalEl = document.getElementById("saveRebootModal");
+                                console.log("🎯 Modal element found:", modalEl);
+
+                                saveRebootModalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+                                console.log("📦 Modal instance:", saveRebootModalInstance);
+
+                                saveRebootModalInstance.hide();
+                                console.log("👋 Called .hide() on modal");
+
+// ✅ Reload after short delay
+                                setTimeout(() => {
+                                    console.log("🔁 Reloading page after settings update...");
+                                    location.reload();
+                                }, 500); // You can increase this if needed (e.g., 1000ms)
+                            }
+                        })
+                        .catch(() => {});
+
+                    if (++attempts > maxRetries) {
+                        clearInterval(interval);
+                        saveRebootModalInstance.hide();
+                        alert("⚠️ ESP32 did not respond after reboot. Please refresh manually.");
+                    }
+                }, 2000);
+            })
+            .catch(err => {
+                console.error("❌ Save error:", err);
+                saveRebootModalInstance.hide();
+                console.log(("❌ Failed to save settings HERE."));
+            });
+    });
+
+
+    document.getElementById("uploadButton").addEventListener("click", () => {
+        document.getElementById("imageUpload").click(); // Open file picker
+    });
+
+    document.getElementById("imageUpload").addEventListener("change", () => {
+        const file = imageUpload.files[0];
+        const status = document.getElementById("uploadStatus");
+        const spinner = document.getElementById("uploadSpinner");
+
+        if (!file) return;
+
+        // Check PNG
+        if (file.type !== "image/png") {
+            status.textContent = "❌ Only PNG files are allowed.";
+            return;
+        }
+
+        const img = new Image();
+        const objectUrl = URL.createObjectURL(file);
+
+        img.onload = () => {
+            if (img.width !== 320 || img.height !== 240) {
+                status.textContent = "❌ Image must be exactly 320x240.";
+                return;
+            }
+
+            // Show spinner
+            spinner.style.display = "block";
+            status.textContent = "";
+
+            // Upload PNG
+            const formData = new FormData();
+            formData.append("file", file, "bootlogo.png");
+
+            fetch("/uploadpng", {
+                method: "POST",
+                body: formData,
+            })
+                .then(res => {
+                    spinner.style.display = "none";
+                    if (res.ok) {
+                        status.textContent = "✅ Upload successful!";
+                        setTimeout(() => {
+                            console.log("🔁 Reloading page after upload...");
+                            location.reload();
+                        }, 2000); // Wait 2 seconds
+                    } else {
+                        status.textContent = "⚠️ Upload may have succeeded (non-OK response)";
+                    }
+                })
+                .catch(err => {
+                    spinner.style.display = "none";
+                    status.textContent = "❌ Upload error: " + err.message;
+                    console.warn("⚠️ Ignored upload mismatch error:", err);
+                });
+
+        };
+
+        img.onerror = () => {
+            status.textContent = "❌ Not a valid PNG image.";
+        };
+
+        img.src = objectUrl;
+    });
+
+
+
+
+
+
+
+
+
+</script>
+        <!-- ESP32 Reboot Modal -->
+        <div aria-hidden="true" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="rebootModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-dark text-white text-center">
+                    <div class="modal-body d-flex align-items-center justify-content-center" style="font-family: 'Orbitron', sans-serif; font-size: 20px;">
+                        <!-- Thumbnail Image -->
+                        <img alt="Selected Logo" id="rebootLogoPreview" src="" style="width: 200px; height: auto; margin-right: 15px; border-radius: 8px; border: 2px solid #555;">
+                        <!-- Text -->
+                        <div>
+                            HamClock is rebooting with new splash screen<br>Please wait while it reconnects.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Save Settings Reboot Modal -->
+        <div aria-hidden="true" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="saveRebootModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-dark text-white text-center">
+                    <div class="modal-body d-flex align-items-center justify-content-center" style="font-family: 'Orbitron', sans-serif; font-size: 20px;">
+                        <div class="spinner-border text-light me-3" role="status"><span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div>
+                            🔄 Rebooting HamClock to apply settings...<br>Please wait while it reconnects.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Bootstrap JS (always last) -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
