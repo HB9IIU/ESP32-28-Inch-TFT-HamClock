@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8"/>
         <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-        <link rel="icon" type="image/x-icon" href="/favicon.ico">
+        <link href="/favicon.ico" rel="icon" type="image/x-icon">
         <title>HamClock</title>
         <!-- Bootstrap 5 CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
@@ -28,39 +28,29 @@
                 <div class="col-md-12">
                     <div class="container" data-pg-collapsed>
                         <!-- Time Containers with Flex to create a gap -->
-                        <div class="row" data-pg-collapsed>
-                            <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-5 col-lg-5 col-md-6 col-sm-5 col-xl-5 col-xxl-5">
                                 <p class="text-center text-white" style="font-size: 26px; font-family: 'Orbitron', sans-serif; font-weight: 400;">Local
                             Time</p>
                             </div>
-                            <div class="col-md-6">
-                                <p class="text-center text-white" style="font-size: 26px; font-family: 'Orbitron', sans-serif; font-weight: 400;">UTC Time</p>
+                            <div class="col-auto col-lg-2 col-md-auto col-sm-auto col-xl-2 col-xxl-2">
+</div>
+                            <div class="col-6 col-lg-5 col-md-6 col-sm-6 col-xl-5 col-xxl-5">
+                                <p class="text-center text-white" style="font-size: 26px; font-family: 'Orbitron', sans-serif; font-weight: 400;">UTC
+                            Time</p>
                             </div>
                         </div>
-                        <div class="row" data-pg-collapsed>
-                            <div style="text-align: center;" class="col-md-5">
+                        <div class="row">
+                            <div class="col-lg-5 col-md-6 col-xl-5 col-xxl-5" style="text-align: center;">
                                 <div class="time-container" id="localTime" style="font-size: 80px; font-weight: normal; font-family: Digital7;">00:00:00
 </div>
                             </div>
-                            <div class="col-md-2 d-flex justify-content-center align-items-center" style="height: 100%;"><a href="https://github.com/HB9IIU/ESP32-CYD-HamClock" target="_blank" rel="noopener noreferrer"> <img src="github.png" alt="GitHub Logo" style="max-width: 100%; height: auto;"> </a>
+                            <div class="align-items-center col-lg-2 col-md-auto col-xl-2 col-xxl-2 d-flex d-lg-flex d-none justify-content-center" style="height: 100%;">
+                                <a href="https://github.com/HB9IIU/ESP32-28-Inch-TFT-HamClock" rel="noopener noreferrer" target="_blank"> <img alt="GitHub Logo" src="github.png" style="max-width: 100%; height: auto;"> </a>
                             </div>
-                            <div style="text-align: center;" class="col-md-5">
+                            <div class="col-lg-5 col-md-6 col-xl-5 col-xxl-5" style="text-align: center;">
                                 <div class="time-container" id="utcTime" style="font-size: 80px; font-weight: normal; font-family: Digital7;">00:00:00
 </div>
-                            </div>
-                        </div>
-                        <div class="row" data-pg-collapsed>
-                            <div style="text-align: center;" class="col-md-5">
-                                <h3 class="text-center text-secondary" style="margin-top: -10px; font-family: 'Orbitron', sans-serif; font-size: 16px; text-align: center;"> <div contenteditable="true" id="columnTitleLocalTime" style="display: inline; background-color: black; color: white; padding: 0 5px; font-size: 16px; font-family: 'Orbitron', sans-serif;">
-                                        Column title
-</div> </h3>
-                            </div>
-                            <div style="text-align: center;" class="col-md-2">
-</div>
-                            <div style="text-align: center;" class="col-md-5">
-                                <h3 class="text-center text-secondary" style="margin-top: -10px; font-family: 'Orbitron', sans-serif; font-size: 16px; text-align: center;"> <div contenteditable="true" id="columnTitleUTCtime" style="display: inline; background-color: black; color: white; padding: 0 5px; font-size: 16px; font-family: 'Orbitron', sans-serif;">
-                                        Column title
-</div> </h3>
                             </div>
                         </div>
                         <div class="row" data-pg-collapsed style="margin-top: 8px;">
@@ -206,12 +196,12 @@
                 </div>
             </div>
             <div class="row" data-pg-collapsed>
-                <div class="text-center mt-4">
-                    <input type="file" id="imageUpload" accept="image/png" class="form-control d-none">
-                    <button id="uploadButton" class="btn btn-success mt-2">Upload Custom Splash Image -> PNG 320x240</button>
-                    <p id="uploadStatus" class="text-white mt-2" style="font-family: 'Orbitron', sans-serif;"></p>
+                <div class="text-center mt-4" data-pg-collapsed>
+                    <input accept="image/png" class="form-control d-none" id="imageUpload" type="file">
+                    <button class="btn btn-success mt-2" id="uploadButton">Upload Custom Splash Image -> PNG 320x240</button>
+                    <p class="text-white mt-2" id="uploadStatus" style="font-family: 'Orbitron', sans-serif;"></p>
                     <!-- Spinner -->
-                    <div id="uploadSpinner" class="mt-3" style="display: none;">
+                    <div class="mt-3" id="uploadSpinner" style="display: none;">
                         <div class="spinner-border text-success" role="status"><span class="visually-hidden">Uploading...</span>
                         </div>
                         <p class="text-white mt-2" style="font-family: 'Orbitron', sans-serif;">Uploading...</p>
@@ -219,6 +209,11 @@
                 </div>
             </div>
             <div class="row" data-pg-collapsed>
+                <div class="text-center mt-4" data-pg-collapsed><a href="/apikey.html" target="_blank" class="btn btn-warning mt-2">
+      Modify Open Weather API key </a>
+                </div>
+            </div>
+            <div class="row" data-pg-collapsed style="visibility: hidden;">
                 <div class="text-center mt-4">
                     <button class="btn btn-light px-4 py-2" id="saveAllButton" style="font-family: 'Orbitron', sans-serif;" type="button">
                         Save All To Flash Memory
@@ -229,13 +224,15 @@
         <script>
     const labelIdToTarget = {
 
-            columnTitleLocalTime: "localTimeLabel",
-            columnTitleUTCtime:
-                "utcTimeLabel"
-        }
-    ;
+        columnTitleLocalTime: "localTimeLabel",
+        columnTitleUTCtime:
+            "utcTimeLabel"
+    };
 
-
+    let screenSaverSlider = document.getElementById("screenSaverSlider");
+    let screenSaverLabel = document.getElementById("screenSaverLabel");
+    let speedSlider = document.getElementById('speedSlider');
+    let weatherBannerText = document.getElementById('weatherBannerText');
     let saveRebootModalInstance;  // ✅ Global declaration
     let currentDoubleFrame = false;
 
@@ -258,9 +255,7 @@
 
     colorPicker.on("color:change", function (color) {
         const colorHex = color.hexString;
-        const rgb565 = rgb565FromHex(colorHex);
 
-        // Apply color visually
         if (currentTarget === 'localTimeDigits') {
             document.getElementById("localTime").style.color = colorHex;
         } else if (currentTarget === 'localTimeFrame') {
@@ -272,8 +267,11 @@
         } else if (currentTarget === 'weatherBannerText') {
             document.getElementById("weatherBannerText").style.color = colorHex;
         }
+    });
+    colorPicker.on("input:end", function (color) {
+        const colorHex = color.hexString;
+        const rgb565 = rgb565FromHex(colorHex);
 
-        // Send update to ESP32
         fetch('/setcolor', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -333,31 +331,21 @@
             // Thin border
             document.getElementById("localTime").style.borderWidth = "3px";
             document.getElementById("utcTime").style.borderWidth = "3px";
+            currentDoubleFrame = false;
         } else {
             // Thick border
             document.getElementById("localTime").style.borderWidth = "6px";
             document.getElementById("utcTime").style.borderWidth = "6px";
+            currentDoubleFrame = true;
         }
     }
 
-    // Get the slider and the weather banner text
-    const speedSlider = document.getElementById('speedSlider');
-    const weatherBannerText = document.getElementById('weatherBannerText');
 
-    // Set the initial animation duration (10 seconds as default)
-    let speed = speedSlider.value;
-
-    // Update the animation duration of the scrolling text (inverted)
-    weatherBannerText.style.animationDuration = (31 - speed) + 's'; // Inverted slider logic
-
-    // Add an event listener to the slider to change the scroll speed
-    speedSlider.addEventListener('input', function () {
-        const sliderValue = parseInt(speedSlider.value); // 0–45
-        const bannerSpeed = Math.max(0, Math.min(40, 40 - sliderValue)); // 0 to 40 (for ESP32)
-
-        const animationDuration = 5 + (bannerSpeed / 40) * 40; // 5s to 45s (for web)
+    speedSlider.addEventListener('change', function () {
+        let sliderValue = parseInt(speedSlider.value);       // 0–45
+        let bannerSpeed = 45 - sliderValue;
+        let animationDuration = 15 + (bannerSpeed / 45) * 45;
         weatherBannerText.style.animationDuration = animationDuration + 's';
-
         fetch('/setspeed', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -435,148 +423,6 @@
         });
     }
 
-    document.addEventListener('DOMContentLoaded', async () => {
-
-        document.getElementById("thinBorderCheckbox").addEventListener("change", function () {
-            const thin = this.checked;
-
-            fetch("/setcolor", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    target: "doubleFrame",
-                    value: thin // Thin selected = doubleFrame = false
-                })
-            })
-                .then(res => {
-                    if (!res.ok) throw new Error("Failed to update doubleFrame");
-                    console.log("✅ Border thickness updated:", thin ? "thin" : "thick");
-                })
-                .catch(err => {
-                    console.error("❌ Error updating doubleFrame:", err);
-                });
-        });
-
-
-        saveRebootModalInstance = bootstrap.Modal.getOrCreateInstance(document.getElementById("saveRebootModal"));
-
-        const screenSaverSlider = document.getElementById("screenSaverSlider");
-        const screenSaverLabel = document.getElementById("screenSaverLabel");
-
-        screenSaverSlider.addEventListener("input", () => {
-            const value = screenSaverSlider.value;
-            screenSaverLabel.innerText = `Screen Saver After: ${value} min.`;
-        });
-
-        try {
-            const response = await fetch('/config');
-            const config = await response.json();
-            console.log("📦 Received config from ESP32:", config); // 🧪 This will print the full config
-
-            document.getElementById("latitudeInput").value = config.latitude;
-            document.getElementById("longitudeInput").value = config.longitude;
-            document.getElementById("columnTitleLocalTime").innerText = config.localTimeLabel;
-            document.getElementById("columnTitleUTCtime").innerText = config.utcTimeLabel;
-            document.getElementById("italicFontsBorderCheckbox").checked = config.italicClockFonts;
-            document.getElementById("thinBorderCheckbox").checked = !config.doubleFrame;
-            toggleBorderThickness(); // 🟢 Apply the initial border thickness right away
-
-            const slider = document.getElementById("speedSlider");
-            slider.value = config.bannerSpeed;
-            weatherBannerText.style.animationDuration = (31 - config.bannerSpeed) + 's';
-
-            document.getElementById("weatherBannerText").style.color = hexFrom565(config.bannerColour);
-            timeoutMinutes = config.screenSaverTimeout ;
-            document.getElementById("screenSaverSlider").value = timeoutMinutes;
-            document.getElementById("screenSaverLabel").innerText = `Screen Saver After: ${timeoutMinutes} min.`;
-
-            if (config.startupLogo) {
-                const selectedImage = document.querySelector(`img[src="${config.startupLogo}"]`);
-                if (selectedImage) {
-                    selectedImage.parentElement.classList.add('selected-image');
-                    selectedImage.classList.add('selected-image');
-                } else {
-                    console.warn("⚠️ Unknown boot image:", config.startupLogo);
-                }
-            }
-
-            document.getElementById("localTime").style.borderColor = hexFrom565(config.localFrameColour);
-            document.getElementById("utcTime").style.borderColor = hexFrom565(config.utcFrameColour);
-            document.getElementById("localTime").style.color = hexFrom565(config.localTimeColour);
-            document.getElementById("utcTime").style.color = hexFrom565(config.utcTimeColour);
-
-            ['columnTitleLocalTime', 'columnTitleUTCtime'].forEach(id => {
-                const el = document.getElementById(id);
-                el.addEventListener('blur', () => {
-                    const target = labelIdToTarget[id];
-                    const value = el.innerText.trim();
-                    if (value !== '') {
-                        sendLabelUpdate(target, value);
-                    }
-                });
-                el.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        el.blur();
-                    }
-                });
-            });
-
-            ['latitudeInput', 'longitudeInput'].forEach(id => {
-                const el = document.getElementById(id);
-                el.addEventListener('blur', () => {
-                    sendPositionUpdate();
-                });
-                el.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        el.blur();
-                    }
-                });
-            });
-            function sendPositionUpdate() {
-                const latitude = document.getElementById("latitudeInput").value.trim();
-                const longitude = document.getElementById("longitudeInput").value.trim();
-
-                if (latitude !== '' && longitude !== '') {
-                    fetch('/setposition', {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({latitude, longitude})
-                    })
-                        .then(res => {
-                            if (!res.ok) throw new Error("Failed to update position");
-                            console.log(`📍 Position updated: lat=${latitude}, lon=${longitude}`);
-
-                            // ✅ Now update the scroll text instead of reloading config
-                            updateScrollText();
-                        })
-                        .catch(err => {
-                            console.error("❌ Error during position update:", err);
-                        });
-                }
-            }
-
-
-
-
-
-            try {
-                const textResponse = await fetch('/scrolltext');
-                const bannerText = await textResponse.text();
-                document.getElementById("weatherBannerText").innerText = bannerText;
-            } catch (err) {
-                console.error("❌ Failed to fetch scrollText:", err);
-            }
-
-        } catch (err) {
-            console.error("❌ Failed to fetch config:", err);
-        }
-
-
-    });
-
-
     function updateScrollText() {
         fetch("/scrolltext")
             .then(response => {
@@ -599,12 +445,6 @@
             });
     }
 
-
-
-
-
-
-    // Helper to convert 16-bit RGB565 to hex string
     function hexFrom565(rgb565) {
         let r = ((rgb565 >> 11) & 0x1F) * 255 / 31;
         let g = ((rgb565 >> 5) & 0x3F) * 255 / 63;
@@ -616,9 +456,6 @@
 
         return `#${[r, g, b].map(x => x.toString(16).padStart(2, '0')).join('')}`;
     }
-
-
-
 
     function sendLabelUpdate(id, value) {
         fetch('/setlabel', {
@@ -654,6 +491,28 @@
             .catch(err => console.error("❌ Error updating italicClockFonts:", err));
     }
 
+    function sendPositionUpdate() {
+        const latitude = document.getElementById("latitudeInput").value.trim();
+        const longitude = document.getElementById("longitudeInput").value.trim();
+
+        if (latitude !== '' && longitude !== '') {
+            fetch('/setposition', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({latitude, longitude})
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error("Failed to update position");
+                    console.log(`📍 Position updated: lat=${latitude}, lon=${longitude}`);
+
+                    // ✅ Now update the scroll text instead of reloading config
+                    updateScrollText();
+                })
+                .catch(err => {
+                    console.error("❌ Error during position update:", err);
+                });
+        }
+    }
 
     document.getElementById("saveAllButton").addEventListener("click", () => {
         const config = {
@@ -663,9 +522,10 @@
             utcTimeLabel: document.getElementById("columnTitleUTCtime").innerText.trim(),
             italicClockFonts: document.getElementById("italicFontsBorderCheckbox").checked,
             doubleFrame: currentDoubleFrame,
-            bannerSpeed: parseInt(document.getElementById("speedSlider").value),
+            bannerSpeed: 45 - parseInt(document.getElementById("speedSlider").value),
             screenSaverTimeout: parseInt(document.getElementById("screenSaverSlider").value) * 60000
         };
+
 
         // ⚠️ FIX: Re-create the modal instance safely before calling .show()
         saveRebootModalInstance = bootstrap.Modal.getOrCreateInstance(document.getElementById("saveRebootModal"));
@@ -707,7 +567,8 @@
                                 }, 500); // You can increase this if needed (e.g., 1000ms)
                             }
                         })
-                        .catch(() => {});
+                        .catch(() => {
+                        });
 
                     if (++attempts > maxRetries) {
                         clearInterval(interval);
@@ -722,7 +583,6 @@
                 console.log(("❌ Failed to save settings HERE."));
             });
     });
-
 
     document.getElementById("uploadButton").addEventListener("click", () => {
         document.getElementById("imageUpload").click(); // Open file picker
@@ -788,6 +648,278 @@
 
         img.src = objectUrl;
     });
+    screenSaverSlider.addEventListener("input", () => {
+        const value = screenSaverSlider.value;
+        screenSaverLabel.innerText = `Screen Saver After: ${value} min.`;
+    });
+
+    screenSaverSlider.addEventListener("change", function () {
+        const minutes = parseInt(this.value);
+        const timeoutMs = minutes * 60000;
+
+        fetch('/setScreenSaverTime', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({screenSaverTimeout: timeoutMs})
+        })
+            .then(response => {
+                if (!response.ok) throw new Error("Failed to send screen saver timeout");
+                console.log("🖥️ Screen Saver timeout sent to ESP32:", minutes, "minutes");
+            })
+            .catch(err => {
+                console.error("❌ Error sending screen saver timeout:", err);
+            });
+    });
+
+    document.getElementById("thinBorderCheckbox").addEventListener("change", function () {
+        const thin = this.checked;
+
+        fetch("/setcolor", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                target: "doubleFrame",
+                value: thin // Thin selected = doubleFrame = false
+            })
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to update doubleFrame");
+                console.log("✅ Border thickness updated:", thin ? "thin" : "thick");
+            })
+            .catch(err => {
+                console.error("❌ Error updating doubleFrame:", err);
+            });
+    });
+
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+        console.groupCollapsed('🧭 HamClock UI Init');
+
+        // ---------- Small logging helpers ----------
+        const log = (...args) => console.log('🔹', ...args);
+        const warn = (...args) => console.warn('⚠️', ...args);
+        const err  = (...args) => console.error('❌', ...args);
+
+        // ---------- Element cache + safe getter ----------
+        const getEl = (id) => {
+        const el = document.getElementById(id);
+        if (!el) warn(`Element #${id} not found`);
+        return el;
+    };
+
+        // Cache all used elements up front
+        const els = {
+        saveRebootModal: getEl('saveRebootModal'),
+        latitudeInput: getEl('latitudeInput'),
+        longitudeInput: getEl('longitudeInput'),
+        columnTitleLocalTime: getEl('columnTitleLocalTime'),
+        columnTitleUTCtime: getEl('columnTitleUTCtime'),
+        italicFontsBorderCheckbox: getEl('italicFontsBorderCheckbox'),
+        thinBorderCheckbox: getEl('thinBorderCheckbox'),
+        localTime: getEl('localTime'),
+        utcTime: getEl('utcTime'),
+        speedSlider: getEl('speedSlider') || getEl('bannerSpeedSlider'), // fallback if named differently
+        weatherBannerText: getEl('weatherBannerText'),
+        screenSaverSlider: getEl('screenSaverSlider'),
+        screenSaverLabel: getEl('screenSaverLabel'),
+    };
+
+        // Bootstrap modal (if present)
+        let saveRebootModalInstance = null;
+        if (els.saveRebootModal && window.bootstrap?.Modal) {
+        saveRebootModalInstance = bootstrap.Modal.getOrCreateInstance(els.saveRebootModal);
+        log('Modal instance created');
+    } else {
+        warn('Bootstrap modal or #saveRebootModal not available');
+    }
+
+        // ---------- Utilities expected elsewhere ----------
+        // These are assumed to exist globally in your app:
+        // - hexFrom565(number) -> "#RRGGBB"
+        // - toggleBorderThickness()
+        // - sendLabelUpdate(target, value)
+        // - sendPositionUpdate()
+        // - labelIdToTarget (map of element id -> target key)
+        if (typeof hexFrom565 !== 'function') warn('hexFrom565() not found');
+        if (typeof toggleBorderThickness !== 'function') warn('toggleBorderThickness() not found');
+        if (typeof sendLabelUpdate !== 'function') warn('sendLabelUpdate() not found');
+        if (typeof sendPositionUpdate !== 'function') warn('sendPositionUpdate() not found');
+        if (typeof labelIdToTarget === 'undefined') warn('labelIdToTarget not found');
+
+        // ---------- Fetch + apply CONFIG ----------
+        const loadConfig = async () => {
+        log('Fetching /config...');
+        try {
+        const response = await fetch('/config');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const config = await response.json();
+        console.groupCollapsed('📦 Config received');
+        console.table(config);
+        console.groupEnd();
+
+        //API-key
+            if (!config.APIkeyIsValid) {
+                // show toast
+                const toastEl = document.getElementById('apiKeyToast');
+                const toast = new bootstrap.Toast(toastEl, { delay: 2500 }); // auto-hide after 2.5s
+                toast.show();
+
+                // redirect after a short delay
+                setTimeout(() => {
+                    window.location.href = "/apikey.html";
+                }, 2500);
+
+                // 🚨 stop executing the rest of loadConfig
+                return;
+            }
+
+        // Inputs
+        if (els.latitudeInput)  els.latitudeInput.value  = config.latitude ?? '';
+        if (els.longitudeInput) els.longitudeInput.value = config.longitude ?? '';
+
+        // Labels
+        if (els.columnTitleLocalTime) els.columnTitleLocalTime.innerText = config.localTimeLabel ?? 'Local Time';
+        if (els.columnTitleUTCtime)   els.columnTitleUTCtime.innerText   = config.utcTimeLabel   ?? 'UTC Time';
+        log('Labels updated');
+
+        // Font style
+        if (els.italicFontsBorderCheckbox) els.italicFontsBorderCheckbox.checked = !!config.italicClockFonts;
+        const newFont = config.italicClockFonts ? 'Digital7Italic' : 'Digital7';
+        if (els.localTime) els.localTime.style.fontFamily = newFont;
+        if (els.utcTime)   els.utcTime.style.fontFamily   = newFont;
+        log('Clock font set to', newFont);
+
+        // Border thickness
+        if (els.thinBorderCheckbox) els.thinBorderCheckbox.checked = !config.doubleFrame;
+        if (typeof toggleBorderThickness === 'function') {
+        toggleBorderThickness();
+        log('Border thickness toggled (doubleFrame:', !!config.doubleFrame, ')');
+    }
+
+        // Banner speed & duration
+        if (els.speedSlider) {
+        els.speedSlider.value = 45 - (config.bannerSpeed ?? 0);
+    }
+        if (els.weatherBannerText) {
+        const speed = Number(config.bannerSpeed ?? 0);
+        const animationDuration = 15 + (speed / 45) * 45; // preserve your formula
+        els.weatherBannerText.style.animationDuration = animationDuration + 's';
+        log('Banner speed set. Duration:', animationDuration + 's');
+
+        // Banner colour
+        if (typeof hexFrom565 === 'function') {
+        els.weatherBannerText.style.color = hexFrom565(config.bannerColour ?? 0);
+        log('Banner colour set to', hexFrom565(config.bannerColour ?? 0));
+    }
+    }
+
+        // Screen saver
+        if (els.screenSaverSlider) els.screenSaverSlider.value = config.screenSaverTimeout ?? 0;
+        if (els.screenSaverLabel) {
+        const minutes = config.screenSaverTimeout ?? 0;
+        els.screenSaverLabel.innerText = `Screen Saver After: ${minutes} min.`;
+        log('Screen saver timeout set to', minutes, 'min');
+    }
+
+        // Startup logo selection highlight
+        if (config.startupLogo) {
+        const sel = document.querySelector(`img[src="${config.startupLogo}"]`);
+        if (sel && sel.parentElement) {
+        sel.parentElement.classList.add('selected-image');
+        sel.classList.add('selected-image');
+        log('Startup logo selected:', config.startupLogo);
+    } else {
+        warn('Unknown boot image:', config.startupLogo);
+    }
+    }
+
+        // Frame and text colours
+        if (typeof hexFrom565 === 'function') {
+        if (els.localTime) {
+        els.localTime.style.borderColor = hexFrom565(config.localFrameColour ?? 0);
+        els.localTime.style.color       = hexFrom565(config.localTimeColour  ?? 0);
+    }
+        if (els.utcTime) {
+        els.utcTime.style.borderColor = hexFrom565(config.utcFrameColour ?? 0);
+        els.utcTime.style.color       = hexFrom565(config.utcTimeColour  ?? 0);
+    }
+        log('Colours applied to frames and text');
+    }
+
+    } catch (e) {
+        err('Error fetching config:', e);
+    }
+    };
+
+        // ---------- Fetch scroll text ----------
+        const loadScrollText = async () => {
+        log('Fetching /scrolltext...');
+        try {
+        const response = await fetch('/scrolltext');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const text = await response.text();
+        if (els.weatherBannerText) els.weatherBannerText.innerText = text;
+        log('Scroll text loaded. Length:', text?.length ?? 0);
+    } catch (e) {
+        err('Error fetching scroll text:', e);
+    }
+    };
+
+        // ---------- Event wiring ----------
+        const wireEditableLabels = () => {
+        ['columnTitleLocalTime', 'columnTitleUTCtime'].forEach((id) => {
+        const el = els[id];
+        if (!el) return;
+        el.addEventListener('blur', () => {
+        const value = el.innerText.trim();
+        const target = (typeof labelIdToTarget !== 'undefined') ? labelIdToTarget[id] : null;
+        if (!target) return warn('No target mapping for', id);
+        if (value) {
+        log(`Label blur -> sendLabelUpdate(${target}, "${value}")`);
+        if (typeof sendLabelUpdate === 'function') sendLabelUpdate(target, value);
+    }
+    });
+        el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+        e.preventDefault();
+        log(`Enter pressed on #${id} -> blur()`);
+        el.blur();
+    }
+    });
+    });
+        log('Label events wired');
+    };
+
+        const wirePositionInputs = () => {
+        ['latitudeInput', 'longitudeInput'].forEach((key) => {
+        const el = els[key];
+        if (!el) return;
+        el.addEventListener('blur', () => {
+        log(`${key} blur -> sendPositionUpdate()`);
+        if (typeof sendPositionUpdate === 'function') sendPositionUpdate();
+    });
+        el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+        e.preventDefault();
+        log(`Enter pressed on #${key} -> blur()`);
+        el.blur();
+    }
+    });
+    });
+        log('Position input events wired');
+    };
+
+        // ---------- Run ----------
+        (async () => {
+        wireEditableLabels();
+        wirePositionInputs();
+        await loadConfig();
+        await loadScrollText();
+        console.groupEnd();
+        log('✅ UI initialization complete');
+    })();
+    });
 
 
 
@@ -795,9 +927,17 @@
 
 
 
-
-
-</script>
+        </script>
+        <div class="position-fixed top-50 start-50 translate-middle p-3" style="z-index: 1100">
+            <div id="apiKeyToast" class="toast align-items-center text-bg-warning border-0 " role="alert">
+                <div class="d-flex">
+                    <div class="toast-body" style="font-family: 'Orbitron', sans-serif; font-size: 18px; text-align: center;">
+                        No weather API key found... redirecting to API key configuration
+</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        </div>
         <!-- ESP32 Reboot Modal -->
         <div aria-hidden="true" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="rebootModal" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
