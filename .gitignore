@@ -3,3 +3,8 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
+# Ignore VSCode project settings
+.vscode/
+
+# Ignore macOS system files
+.DS_Store
