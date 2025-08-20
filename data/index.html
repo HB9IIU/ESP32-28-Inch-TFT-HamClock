@@ -45,8 +45,7 @@
                                 <div class="time-container" id="localTime" style="font-size: 80px; font-weight: normal; font-family: Digital7;">00:00:00
 </div>
                             </div>
-                            <div class="align-items-center col-lg-2 col-md-auto col-xl-2 col-xxl-2 d-flex d-lg-flex d-none justify-content-center" style="height: 100%;">
-                                <a href="https://github.com/HB9IIU/ESP32-28-Inch-TFT-HamClock" rel="noopener noreferrer" target="_blank"> <img alt="GitHub Logo" src="github.png" style="max-width: 100%; height: auto;"> </a>
+                            <div class="align-items-center col-lg-2 col-md-auto col-xl-2 col-xxl-2 d-flex d-lg-flex d-none justify-content-center" style="height: 100%;"><a href="https://github.com/HB9IIU/ESP32-28-Inch-TFT-HamClock" rel="noopener noreferrer" target="_blank"> <img alt="GitHub Logo" src="github.png" style="max-width: 100%; height: auto;"> </a>
                             </div>
                             <div class="col-lg-5 col-md-6 col-xl-5 col-xxl-5" style="text-align: center;">
                                 <div class="time-container" id="utcTime" style="font-size: 80px; font-weight: normal; font-family: Digital7;">00:00:00
@@ -187,12 +186,20 @@
                 </div>
             </div>
             <div class="row" style="margin-bottom: 20px; display: flex; justify-content: center; margin-top: 20px;">
-                <div class="col-md-4" data-pg-collapsed>
+                <div data-pg-collapsed class="col-md-3">
                     <p class="text-white" id="screenSaverLabel" style="font-family: 'Orbitron', sans-serif; margin-top: 10px;">
                 Screen Saver After: 5 min.</p>
                 </div>
-                <div class="col-md-8">
+                <div data-pg-collapsed class="col-md-6">
                     <input id="screenSaverSlider" max="120" min="0" step="2" style="width:100%; margin-top: 10px;" type="range" value="5">
+                </div>
+                <div class="col-md-3 d-flex align-items-center">
+                    <div class="form-check">
+                        <input class="form-check-input" id="autoPageChangeCheckbox" type="checkbox" style="font-size:18px;">
+                        <label class="form-check-label text-white" for="autoPageChangeCheckbox" style="font-size:18px; font-family:'Orbitron', sans-serif;">
+                            Auto Page Change
+</label>
+                    </div>
                 </div>
             </div>
             <div class="row" data-pg-collapsed>
@@ -202,15 +209,16 @@
                     <p class="text-white mt-2" id="uploadStatus" style="font-family: 'Orbitron', sans-serif;"></p>
                     <!-- Spinner -->
                     <div class="mt-3" id="uploadSpinner" style="display: none;">
-                        <div class="spinner-border text-success" role="status"><span class="visually-hidden">Uploading...</span>
+                        <div class="spinner-border text-success" role="status">
+                            <span class="visually-hidden">Uploading...</span>
                         </div>
                         <p class="text-white mt-2" style="font-family: 'Orbitron', sans-serif;">Uploading...</p>
                     </div>
                 </div>
             </div>
             <div class="row" data-pg-collapsed>
-                <div class="text-center mt-4" data-pg-collapsed><a href="/apikey.html" target="_blank" class="btn btn-warning mt-2">
-      Modify Open Weather API key </a>
+                <div class="text-center mt-4" data-pg-collapsed><a class="btn btn-warning mt-2" href="/apikey.html" target="_blank">
+            Modify Open Weather API key </a>
                 </div>
             </div>
             <div class="row" data-pg-collapsed style="visibility: hidden;">
@@ -690,49 +698,57 @@
                 console.error("❌ Error updating doubleFrame:", err);
             });
     });
+    document.getElementById("autoPageChangeCheckbox").addEventListener("change", function () {
+        const change = this.checked; // true or false
 
+        fetch(`/setAutoPage?enabled=${change}`)
+            .then(response => response.text())
+            .then(data => console.log("ESP response:", data))
+            .catch(err => console.error("Error:", err));
+    });
 
-
-        document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', () => {
         console.groupCollapsed('🧭 HamClock UI Init');
 
         // ---------- Small logging helpers ----------
         const log = (...args) => console.log('🔹', ...args);
         const warn = (...args) => console.warn('⚠️', ...args);
-        const err  = (...args) => console.error('❌', ...args);
+        const err = (...args) => console.error('❌', ...args);
 
         // ---------- Element cache + safe getter ----------
         const getEl = (id) => {
-        const el = document.getElementById(id);
-        if (!el) warn(`Element #${id} not found`);
-        return el;
-    };
+            const el = document.getElementById(id);
+            if (!el) warn(`Element #${id} not found`);
+            return el;
+        };
 
         // Cache all used elements up front
         const els = {
-        saveRebootModal: getEl('saveRebootModal'),
-        latitudeInput: getEl('latitudeInput'),
-        longitudeInput: getEl('longitudeInput'),
-        columnTitleLocalTime: getEl('columnTitleLocalTime'),
-        columnTitleUTCtime: getEl('columnTitleUTCtime'),
-        italicFontsBorderCheckbox: getEl('italicFontsBorderCheckbox'),
-        thinBorderCheckbox: getEl('thinBorderCheckbox'),
-        localTime: getEl('localTime'),
-        utcTime: getEl('utcTime'),
-        speedSlider: getEl('speedSlider') || getEl('bannerSpeedSlider'), // fallback if named differently
-        weatherBannerText: getEl('weatherBannerText'),
-        screenSaverSlider: getEl('screenSaverSlider'),
-        screenSaverLabel: getEl('screenSaverLabel'),
-    };
+            saveRebootModal: getEl('saveRebootModal'),
+            latitudeInput: getEl('latitudeInput'),
+            longitudeInput: getEl('longitudeInput'),
+            columnTitleLocalTime: getEl('columnTitleLocalTime'),
+            columnTitleUTCtime: getEl('columnTitleUTCtime'),
+            italicFontsBorderCheckbox: getEl('italicFontsBorderCheckbox'),
+            thinBorderCheckbox: getEl('thinBorderCheckbox'),
+            localTime: getEl('localTime'),
+            utcTime: getEl('utcTime'),
+            speedSlider: getEl('speedSlider') || getEl('bannerSpeedSlider'), // fallback if named differently
+            weatherBannerText: getEl('weatherBannerText'),
+            screenSaverSlider: getEl('screenSaverSlider'),
+            screenSaverLabel: getEl('screenSaverLabel'),
+            autoPageChangeCheckbox: getEl('autoPageChangeCheckbox'),
+
+        };
 
         // Bootstrap modal (if present)
         let saveRebootModalInstance = null;
         if (els.saveRebootModal && window.bootstrap?.Modal) {
-        saveRebootModalInstance = bootstrap.Modal.getOrCreateInstance(els.saveRebootModal);
-        log('Modal instance created');
-    } else {
-        warn('Bootstrap modal or #saveRebootModal not available');
-    }
+            saveRebootModalInstance = bootstrap.Modal.getOrCreateInstance(els.saveRebootModal);
+            log('Modal instance created');
+        } else {
+            warn('Bootstrap modal or #saveRebootModal not available');
+        }
 
         // ---------- Utilities expected elsewhere ----------
         // These are assumed to exist globally in your app:
@@ -749,192 +765,191 @@
 
         // ---------- Fetch + apply CONFIG ----------
         const loadConfig = async () => {
-        log('Fetching /config...');
-        try {
-        const response = await fetch('/config');
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const config = await response.json();
-        console.groupCollapsed('📦 Config received');
-        console.table(config);
-        console.groupEnd();
+            log('Fetching /config...');
+            try {
+                const response = await fetch('/config');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const config = await response.json();
+                console.groupCollapsed('📦 Config received');
+                console.table(config);
+                console.groupEnd();
 
-        //API-key
-            if (!config.APIkeyIsValid) {
-                // show toast
-                const toastEl = document.getElementById('apiKeyToast');
-                const toast = new bootstrap.Toast(toastEl, { delay: 2500 }); // auto-hide after 2.5s
-                toast.show();
+                //API-key
+                if (!config.APIkeyIsValid) {
+                    // show toast
+                    const toastEl = document.getElementById('apiKeyToast');
+                    const toast = new bootstrap.Toast(toastEl, {delay: 2500}); // auto-hide after 2.5s
+                    toast.show();
 
-                // redirect after a short delay
-                setTimeout(() => {
-                    window.location.href = "/apikey.html";
-                }, 2500);
+                    // redirect after a short delay
+                    setTimeout(() => {
+                        window.location.href = "/apikey.html";
+                    }, 2500);
 
-                // 🚨 stop executing the rest of loadConfig
-                return;
+                    // 🚨 stop executing the rest of loadConfig
+                    return;
+                }
+                // Auto Page Change
+                if (els.autoPageChangeCheckbox) {
+                    els.autoPageChangeCheckbox.checked = !!config.autoPageChangeCheckbox;
+                    log('Auto Page Change set to', !!config.autoPageChangeCheckbox);
+                }
+                // Inputs
+                if (els.latitudeInput) els.latitudeInput.value = config.latitude ?? '';
+                if (els.longitudeInput) els.longitudeInput.value = config.longitude ?? '';
+
+                // Labels
+                if (els.columnTitleLocalTime) els.columnTitleLocalTime.innerText = config.localTimeLabel ?? 'Local Time';
+                if (els.columnTitleUTCtime) els.columnTitleUTCtime.innerText = config.utcTimeLabel ?? 'UTC Time';
+                log('Labels updated');
+
+                // Font style
+                if (els.italicFontsBorderCheckbox) els.italicFontsBorderCheckbox.checked = !!config.italicClockFonts;
+                const newFont = config.italicClockFonts ? 'Digital7Italic' : 'Digital7';
+                if (els.localTime) els.localTime.style.fontFamily = newFont;
+                if (els.utcTime) els.utcTime.style.fontFamily = newFont;
+                log('Clock font set to', newFont);
+
+                // Border thickness
+                if (els.thinBorderCheckbox) els.thinBorderCheckbox.checked = !config.doubleFrame;
+                if (typeof toggleBorderThickness === 'function') {
+                    toggleBorderThickness();
+                    log('Border thickness toggled (doubleFrame:', !!config.doubleFrame, ')');
+                }
+
+                // Banner speed & duration
+                if (els.speedSlider) {
+                    els.speedSlider.value = 45 - (config.bannerSpeed ?? 0);
+                }
+                if (els.weatherBannerText) {
+                    const speed = Number(config.bannerSpeed ?? 0);
+                    const animationDuration = 15 + (speed / 45) * 45; // preserve your formula
+                    els.weatherBannerText.style.animationDuration = animationDuration + 's';
+                    log('Banner speed set. Duration:', animationDuration + 's');
+
+                    // Banner colour
+                    if (typeof hexFrom565 === 'function') {
+                        els.weatherBannerText.style.color = hexFrom565(config.bannerColour ?? 0);
+                        log('Banner colour set to', hexFrom565(config.bannerColour ?? 0));
+                    }
+                }
+
+                // Screen saver
+                if (els.screenSaverSlider) els.screenSaverSlider.value = config.screenSaverTimeout ?? 0;
+                if (els.screenSaverLabel) {
+                    const minutes = config.screenSaverTimeout ?? 0;
+                    els.screenSaverLabel.innerText = `Screen Saver After: ${minutes} min.`;
+                    log('Screen saver timeout set to', minutes, 'min');
+                }
+
+                // Startup logo selection highlight
+                if (config.startupLogo) {
+                    const sel = document.querySelector(`img[src="${config.startupLogo}"]`);
+                    if (sel && sel.parentElement) {
+                        sel.parentElement.classList.add('selected-image');
+                        sel.classList.add('selected-image');
+                        log('Startup logo selected:', config.startupLogo);
+                    } else {
+                        warn('Unknown boot image:', config.startupLogo);
+                    }
+                }
+
+                // Frame and text colours
+                if (typeof hexFrom565 === 'function') {
+                    if (els.localTime) {
+                        els.localTime.style.borderColor = hexFrom565(config.localFrameColour ?? 0);
+                        els.localTime.style.color = hexFrom565(config.localTimeColour ?? 0);
+                    }
+                    if (els.utcTime) {
+                        els.utcTime.style.borderColor = hexFrom565(config.utcFrameColour ?? 0);
+                        els.utcTime.style.color = hexFrom565(config.utcTimeColour ?? 0);
+                    }
+                    log('Colours applied to frames and text');
+                }
+
+            } catch (e) {
+                err('Error fetching config:', e);
             }
-
-        // Inputs
-        if (els.latitudeInput)  els.latitudeInput.value  = config.latitude ?? '';
-        if (els.longitudeInput) els.longitudeInput.value = config.longitude ?? '';
-
-        // Labels
-        if (els.columnTitleLocalTime) els.columnTitleLocalTime.innerText = config.localTimeLabel ?? 'Local Time';
-        if (els.columnTitleUTCtime)   els.columnTitleUTCtime.innerText   = config.utcTimeLabel   ?? 'UTC Time';
-        log('Labels updated');
-
-        // Font style
-        if (els.italicFontsBorderCheckbox) els.italicFontsBorderCheckbox.checked = !!config.italicClockFonts;
-        const newFont = config.italicClockFonts ? 'Digital7Italic' : 'Digital7';
-        if (els.localTime) els.localTime.style.fontFamily = newFont;
-        if (els.utcTime)   els.utcTime.style.fontFamily   = newFont;
-        log('Clock font set to', newFont);
-
-        // Border thickness
-        if (els.thinBorderCheckbox) els.thinBorderCheckbox.checked = !config.doubleFrame;
-        if (typeof toggleBorderThickness === 'function') {
-        toggleBorderThickness();
-        log('Border thickness toggled (doubleFrame:', !!config.doubleFrame, ')');
-    }
-
-        // Banner speed & duration
-        if (els.speedSlider) {
-        els.speedSlider.value = 45 - (config.bannerSpeed ?? 0);
-    }
-        if (els.weatherBannerText) {
-        const speed = Number(config.bannerSpeed ?? 0);
-        const animationDuration = 15 + (speed / 45) * 45; // preserve your formula
-        els.weatherBannerText.style.animationDuration = animationDuration + 's';
-        log('Banner speed set. Duration:', animationDuration + 's');
-
-        // Banner colour
-        if (typeof hexFrom565 === 'function') {
-        els.weatherBannerText.style.color = hexFrom565(config.bannerColour ?? 0);
-        log('Banner colour set to', hexFrom565(config.bannerColour ?? 0));
-    }
-    }
-
-        // Screen saver
-        if (els.screenSaverSlider) els.screenSaverSlider.value = config.screenSaverTimeout ?? 0;
-        if (els.screenSaverLabel) {
-        const minutes = config.screenSaverTimeout ?? 0;
-        els.screenSaverLabel.innerText = `Screen Saver After: ${minutes} min.`;
-        log('Screen saver timeout set to', minutes, 'min');
-    }
-
-        // Startup logo selection highlight
-        if (config.startupLogo) {
-        const sel = document.querySelector(`img[src="${config.startupLogo}"]`);
-        if (sel && sel.parentElement) {
-        sel.parentElement.classList.add('selected-image');
-        sel.classList.add('selected-image');
-        log('Startup logo selected:', config.startupLogo);
-    } else {
-        warn('Unknown boot image:', config.startupLogo);
-    }
-    }
-
-        // Frame and text colours
-        if (typeof hexFrom565 === 'function') {
-        if (els.localTime) {
-        els.localTime.style.borderColor = hexFrom565(config.localFrameColour ?? 0);
-        els.localTime.style.color       = hexFrom565(config.localTimeColour  ?? 0);
-    }
-        if (els.utcTime) {
-        els.utcTime.style.borderColor = hexFrom565(config.utcFrameColour ?? 0);
-        els.utcTime.style.color       = hexFrom565(config.utcTimeColour  ?? 0);
-    }
-        log('Colours applied to frames and text');
-    }
-
-    } catch (e) {
-        err('Error fetching config:', e);
-    }
-    };
+        };
 
         // ---------- Fetch scroll text ----------
         const loadScrollText = async () => {
-        log('Fetching /scrolltext...');
-        try {
-        const response = await fetch('/scrolltext');
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const text = await response.text();
-        if (els.weatherBannerText) els.weatherBannerText.innerText = text;
-        log('Scroll text loaded. Length:', text?.length ?? 0);
-    } catch (e) {
-        err('Error fetching scroll text:', e);
-    }
-    };
+            log('Fetching /scrolltext...');
+            try {
+                const response = await fetch('/scrolltext');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const text = await response.text();
+                if (els.weatherBannerText) els.weatherBannerText.innerText = text;
+                log('Scroll text loaded. Length:', text?.length ?? 0);
+            } catch (e) {
+                err('Error fetching scroll text:', e);
+            }
+        };
 
         // ---------- Event wiring ----------
         const wireEditableLabels = () => {
-        ['columnTitleLocalTime', 'columnTitleUTCtime'].forEach((id) => {
-        const el = els[id];
-        if (!el) return;
-        el.addEventListener('blur', () => {
-        const value = el.innerText.trim();
-        const target = (typeof labelIdToTarget !== 'undefined') ? labelIdToTarget[id] : null;
-        if (!target) return warn('No target mapping for', id);
-        if (value) {
-        log(`Label blur -> sendLabelUpdate(${target}, "${value}")`);
-        if (typeof sendLabelUpdate === 'function') sendLabelUpdate(target, value);
-    }
-    });
-        el.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-        e.preventDefault();
-        log(`Enter pressed on #${id} -> blur()`);
-        el.blur();
-    }
-    });
-    });
-        log('Label events wired');
-    };
+            ['columnTitleLocalTime', 'columnTitleUTCtime'].forEach((id) => {
+                const el = els[id];
+                if (!el) return;
+                el.addEventListener('blur', () => {
+                    const value = el.innerText.trim();
+                    const target = (typeof labelIdToTarget !== 'undefined') ? labelIdToTarget[id] : null;
+                    if (!target) return warn('No target mapping for', id);
+                    if (value) {
+                        log(`Label blur -> sendLabelUpdate(${target}, "${value}")`);
+                        if (typeof sendLabelUpdate === 'function') sendLabelUpdate(target, value);
+                    }
+                });
+                el.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        log(`Enter pressed on #${id} -> blur()`);
+                        el.blur();
+                    }
+                });
+            });
+            log('Label events wired');
+        };
 
         const wirePositionInputs = () => {
-        ['latitudeInput', 'longitudeInput'].forEach((key) => {
-        const el = els[key];
-        if (!el) return;
-        el.addEventListener('blur', () => {
-        log(`${key} blur -> sendPositionUpdate()`);
-        if (typeof sendPositionUpdate === 'function') sendPositionUpdate();
-    });
-        el.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-        e.preventDefault();
-        log(`Enter pressed on #${key} -> blur()`);
-        el.blur();
-    }
-    });
-    });
-        log('Position input events wired');
-    };
+            ['latitudeInput', 'longitudeInput'].forEach((key) => {
+                const el = els[key];
+                if (!el) return;
+                el.addEventListener('blur', () => {
+                    log(`${key} blur -> sendPositionUpdate()`);
+                    if (typeof sendPositionUpdate === 'function') sendPositionUpdate();
+                });
+                el.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        log(`Enter pressed on #${key} -> blur()`);
+                        el.blur();
+                    }
+                });
+            });
+            log('Position input events wired');
+        };
 
         // ---------- Run ----------
         (async () => {
-        wireEditableLabels();
-        wirePositionInputs();
-        await loadConfig();
-        await loadScrollText();
-        console.groupEnd();
-        log('✅ UI initialization complete');
-    })();
+            wireEditableLabels();
+            wirePositionInputs();
+            await loadConfig();
+            await loadScrollText();
+            console.groupEnd();
+            log('✅ UI initialization complete');
+        })();
     });
 
 
-
-
-
-
-
-        </script>
+</script>
         <div class="position-fixed top-50 start-50 translate-middle p-3" style="z-index: 1100">
-            <div id="apiKeyToast" class="toast align-items-center text-bg-warning border-0 " role="alert">
+            <div class="toast align-items-center text-bg-warning border-0 " id="apiKeyToast" role="alert">
                 <div class="d-flex">
                     <div class="toast-body" style="font-family: 'Orbitron', sans-serif; font-size: 18px; text-align: center;">
                         No weather API key found... redirecting to API key configuration
 </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    <button class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" type="button"></button>
                 </div>
             </div>
         </div>
@@ -958,7 +973,8 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content bg-dark text-white text-center">
                     <div class="modal-body d-flex align-items-center justify-content-center" style="font-family: 'Orbitron', sans-serif; font-size: 20px;">
-                        <div class="spinner-border text-light me-3" role="status"><span class="visually-hidden">Loading...</span>
+                        <div class="spinner-border text-light me-3" role="status">
+                            <span class="visually-hidden">Loading...</span>
                         </div>
                         <div>
                             🔄 Rebooting HamClock to apply settings...<br>Please wait while it reconnects.

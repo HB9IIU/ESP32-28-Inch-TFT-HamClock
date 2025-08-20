@@ -51,6 +51,7 @@ unsigned long lastTouchMs = 0;
 bool wasTouching = false;
 int scanCount = 0;
 bool inAPmode = false;
+bool autoPageChange = true;
 // Struct to store all parsed solar data
 struct SolarData
 {
@@ -157,7 +158,7 @@ TFT_eSprite scrollingText = TFT_eSprite(&tft); // Sprite object for "Hello World
 TFT_eSprite labelSprite = TFT_eSprite(&tft); // Global sprite
 
 // Scrolling Text
-int scrollingTextXposition;                                                                                                      // Variable for text position (to start at the rightmost side)
+int scrollingTextXposition;                                                                                                                        // Variable for text position (to start at the rightmost side)
 String scrollText = "Sorry, No Weather Info At This Moment!!!    Have you enterred your API key via the Web Interface at http://hamclock.local ?"; // Text to scroll
 // Timing variables
 unsigned long previousMillisForScroller = 0; // Store last time the action was performed
@@ -244,8 +245,6 @@ void setup()
     tft.setTextColor(TFT_CYAN);
     tft.drawCentreString("Beta Pre-Release", 160, 210, 1);
 
-
-
     retrieveAPIkeyFromPref();
     // apiKey="";
 
@@ -305,6 +304,7 @@ void setup()
   doc["italicClockFonts"] = italicClockFonts;
 doc["screenSaverTimeout"] = screenSaverTimeout / 60000;  // convert ms → minutes
 doc ["APIkeyIsValid"] =APIkeyIsValid;
+doc ["autoPageChangeCheckbox"] =autoPageChange;
 
 Serial.print("HERE"); Serial.println(APIkeyIsValid);
   String response;
@@ -594,6 +594,19 @@ Serial.print("HERE"); Serial.println(APIkeyIsValid);
             server.on("/saveApiKey", handleSaveApiKey);
             server.on("/getApiKey", handleGetApiKey);
 
+            server.on("/setAutoPage", HTTP_GET, []()
+                      {
+                          if (server.hasArg("enabled"))
+                          {
+                              autoPageChange = (server.arg("enabled") == "true");
+                          }
+                          server.send(200, "text/plain", autoPageChange ? "AutoPage ON" : "AutoPage OFF");
+                          saveSettings();
+
+                          activePage = 1;
+                          drawOrredrawStaticElements(); // 🖼️ Redraw Big Clock frames
+                      });
+
             server.begin();
 
             // Initialize NTP Client
@@ -640,6 +653,8 @@ void loop()
     static unsigned long previousMillisForPropagationClockUpdate = 0;
     static unsigned long previousMillisForWiFiPageUpdate = 0;
     static unsigned long previousMillisForScroller = 0;
+    static unsigned long previousMillisForAutoPageChanger = 0;
+
     static unsigned long lastDotUpdate = 0;
     static bool screenSaver = false;
     if (!screenSaver)
@@ -811,6 +826,26 @@ void loop()
             }
             break;
         }
+
+    if (autoPageChange)
+    {
+        // Serial.println();
+        if (currentMillis - previousMillisForAutoPageChanger >= 1000 * 15)
+        {
+            previousMillisForAutoPageChanger = currentMillis;
+            if (activePage == 1)
+            {
+                activePage = 2;
+                redrawMainPropagationPage = true;
+                return;
+            }
+            if (activePage == 2)
+            {
+                activePage = 1;
+                drawOrredrawStaticElements(); // 🖼️ Redraw Big Clock frames
+            }
+        }
+    }
 }
 
 // Fetch weather data
@@ -1175,6 +1210,8 @@ void loadSettings()
     startupLogo = doc["startupLogo"] | startupLogo;
     italicClockFonts = doc["italicClockFonts"] | italicClockFonts;
     screenSaverTimeout = doc["screenSaverTimeout"] | screenSaverTimeout;
+    autoPageChange = doc["screenSaverTimeout"] | autoPageChange;
+
     Serial.println();
     Serial.println("-----------------------------------------------------------------");
     Serial.println("✅ Settings loaded from SPIFFS:");
@@ -1192,6 +1229,8 @@ void loadSettings()
     Serial.printf("🖼️ startupLogo: %s\n", startupLogo.c_str());
     Serial.printf("🔤 italicClockFonts: %s\n", italicClockFonts ? "true" : "false");
     Serial.printf("🕓 screenSaverTimeout: %lu ms\n", screenSaverTimeout);
+    Serial.printf("⚡ Auto Page Change    : %s\n", autoPageChange ? "true" : "false");
+
     Serial.println("-----------------------------------------------------------------");
 }
 
@@ -1211,7 +1250,7 @@ void saveSettings()
     doc["utcTimeLabel"] = utcTimeLabel;
     doc["startupLogo"] = startupLogo;
     doc["italicClockFonts"] = italicClockFonts;
-    doc["screenSaverTimeout"] = screenSaverTimeout;
+    doc["autoPageChangeCheckbox"] = autoPageChange;
 
     fs::File file = SPIFFS.open("/settings.json", "w");
 
@@ -1244,6 +1283,8 @@ void saveSettings()
     Serial.printf("🖼️  Startup Logo      : %s\n", startupLogo.c_str());
     Serial.printf("✏️  Italic Fonts      : %s\n", italicClockFonts ? "true" : "false");
     Serial.printf("😴 Screensaver (ms)   : %lu\n", screenSaverTimeout);
+    Serial.printf("⚡ Auto Page Change    : %s\n", autoPageChange ? "true" : "false");
+
     Serial.println(F("────────────────────────────────────────"));
 
     Serial.println("✅ Settings saved to SPIFFS");
@@ -2177,10 +2218,9 @@ void drawWiFiSignalMeter(int qualityPercent)
 void drawWiFiQualityPage()
 {
     tft.fillScreen(TFT_BLACK);
-    //tft.setFreeFont(&UbuntuMono_Regular8pt7b);
+    // tft.setFreeFont(&UbuntuMono_Regular8pt7b);
     tft.setFreeFont(&FreeSans9pt7b);
 
-    
     tft.setTextSize(1);
 
     int y = 15;
@@ -2390,8 +2430,8 @@ bool tryToConnectSavedWiFi()
             Serial.println(WiFi.localIP());
 
             // 👉 Override DNS after DHCP has completed
-            IPAddress dns1(8,8,8,8);
-            IPAddress dns2(1,1,1,1);
+            IPAddress dns1(8, 8, 8, 8);
+            IPAddress dns2(1, 1, 1, 1);
             if (!WiFi.config(WiFi.localIP(), WiFi.gatewayIP(), WiFi.subnetMask(), dns1, dns2))
             {
                 Serial.println("⚠️ Failed to set DNS servers.");

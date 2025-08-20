@@ -42,7 +42,11 @@ It shows **local and UTC time**, **HF/VHF band conditions**, **solar/geomagnetic
 ---
 
 ## 🖼️ Screenshots / Demo
-*(Optional — add photos of your TFT screen here)*
+
+---
+
+## 📝 To-Do
+- 📱 Adapt Web UI for better viewing on **mobile phones**
 
 ---
 
