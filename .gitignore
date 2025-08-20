@@ -8,3 +8,5 @@
 
 # Ignore macOS system files
 .DS_Store
+
+/data/pinegrow.json
