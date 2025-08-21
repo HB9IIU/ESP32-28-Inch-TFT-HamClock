@@ -30,7 +30,7 @@
 #include "html_page.h"
 #include "html_success.h"
 
-// String apiKey = "e7d1c14803fc104ee6f9cdbec8b5554a"; // API Key
+
 String apiKey;
 const byte DNS_PORT = 53;
 DNSServer dnsServer;
