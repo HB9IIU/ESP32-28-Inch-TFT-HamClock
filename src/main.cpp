@@ -233,6 +233,11 @@ void setup()
     tft.setRotation(3);
     tft.fillScreen(TFT_BLACK);
     Serial.println("TFT Display initialized!");
+
+    // Display PNG from SPIFFS
+    displayPNGfromSPIFFS(startupLogo.c_str(), 0);
+    delay (10000);
+
     checkIfscreenIsTouchedDuringStartUpForFactoryReset();
     // 🔧 Mount SPIFFS
     mountAndListSPIFFS();
