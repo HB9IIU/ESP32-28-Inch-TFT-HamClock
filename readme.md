@@ -42,6 +42,17 @@ It shows **local and UTC time**, **HF/VHF band conditions**, **solar/geomagnetic
 ---
 
 ## 🖼️ Screenshots / Demo
+<p align="center">
+  <img src="https://github.com/HB9IIU/ESP32-28-Inch-TFT-HamClock/blob/main/doc/Photos/IMG_8505.png?raw=true" width="600" alt="HamClock Screenshot">
+</p>
+
+---
+
+## 🌐 Web Installer
+No need to compile anything! You can flash the latest version of ESP32 HamClock directly from your browser using the  
+👉 [**ESP32 HamClock Web Installer**](https://esp32.hb9iiu.com/)  
+
+Works with Chrome/Edge and any browser that supports WebSerial.
 
 ---
 
