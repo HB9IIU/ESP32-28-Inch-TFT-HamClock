@@ -10,3 +10,5 @@
 .DS_Store
 
 /data/pinegrow.json
+
+extra_script.py 
