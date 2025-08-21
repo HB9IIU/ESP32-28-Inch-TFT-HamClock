@@ -110,7 +110,7 @@ uint16_t bannerColour = TFT_DARKGREEN;
 int bannerSpeed = 5;
 String localTimeLabel = "  QTH Time  ";
 String utcTimeLabel = "  UTC Time  ";
-String startupLogo = "logo1.png";
+String startupLogo = "logo3.png";
 bool italicClockFonts = false;
 
 volatile bool refreshDigits = false;
