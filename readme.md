@@ -41,7 +41,7 @@ It shows **local and UTC time**, **HF/VHF band conditions**, **solar/geomagnetic
 
 ---
 
-## 🖼️ Screenshots / Demo
+## 🖼️ Screenshots
 <p align="center">
   <img src="https://github.com/HB9IIU/ESP32-28-Inch-TFT-HamClock/blob/main/doc/Photos/IMG_8505.png?raw=true" width="600" alt="HamClock Screenshot">
 </p>
