@@ -18,6 +18,10 @@ apikey
 # macOS system files
 .DS_Store
 
+# macOS Finder files
+**/.DS_Store
+
+
 # JetBrains IDE (IntelliJ / CLion / PyCharm / etc.)
 .idea/
 *.iml
