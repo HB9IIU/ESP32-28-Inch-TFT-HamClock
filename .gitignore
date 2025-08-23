@@ -14,3 +14,10 @@
 doc/partitions/
 
 apikey
+
+# macOS system files
+.DS_Store
+
+# JetBrains IDE (IntelliJ / CLion / PyCharm / etc.)
+.idea/
+*.iml
