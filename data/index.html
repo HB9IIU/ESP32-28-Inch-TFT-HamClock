@@ -195,8 +195,8 @@
                 </div>
                 <div class="col-md-3 d-flex align-items-center">
                     <div class="form-check">
-                        <input class="form-check-input" id="autoPageChangeCheckbox" type="checkbox" style="font-size:18px;">
-                        <label class="form-check-label text-white" for="autoPageChangeCheckbox" style="font-size:18px; font-family:'Orbitron', sans-serif;">
+                        <input class="form-check-input" id="autoPageChange" type="checkbox" style="font-size:18px;">
+                        <label class="form-check-label text-white" for="autoPageChange" style="font-size:18px; font-family:'Orbitron', sans-serif;">
                             Auto Page Change
 </label>
                     </div>
@@ -526,8 +526,6 @@
         const config = {
             latitude: parseFloat(document.getElementById("latitudeInput").value),
             longitude: parseFloat(document.getElementById("longitudeInput").value),
-            localTimeLabel: document.getElementById("columnTitleLocalTime").innerText.trim(),
-            utcTimeLabel: document.getElementById("columnTitleUTCtime").innerText.trim(),
             italicClockFonts: document.getElementById("italicFontsBorderCheckbox").checked,
             doubleFrame: currentDoubleFrame,
             bannerSpeed: 45 - parseInt(document.getElementById("speedSlider").value),
@@ -698,7 +696,7 @@
                 console.error("❌ Error updating doubleFrame:", err);
             });
     });
-    document.getElementById("autoPageChangeCheckbox").addEventListener("change", function () {
+    document.getElementById("autoPageChange").addEventListener("change", function () {
         const change = this.checked; // true or false
 
         fetch(`/setAutoPage?enabled=${change}`)
@@ -727,8 +725,6 @@
             saveRebootModal: getEl('saveRebootModal'),
             latitudeInput: getEl('latitudeInput'),
             longitudeInput: getEl('longitudeInput'),
-            columnTitleLocalTime: getEl('columnTitleLocalTime'),
-            columnTitleUTCtime: getEl('columnTitleUTCtime'),
             italicFontsBorderCheckbox: getEl('italicFontsBorderCheckbox'),
             thinBorderCheckbox: getEl('thinBorderCheckbox'),
             localTime: getEl('localTime'),
@@ -737,7 +733,7 @@
             weatherBannerText: getEl('weatherBannerText'),
             screenSaverSlider: getEl('screenSaverSlider'),
             screenSaverLabel: getEl('screenSaverLabel'),
-            autoPageChangeCheckbox: getEl('autoPageChangeCheckbox'),
+            autoPageChange: getEl('autoPageChange'),
 
         };
 
@@ -750,13 +746,6 @@
             warn('Bootstrap modal or #saveRebootModal not available');
         }
 
-        // ---------- Utilities expected elsewhere ----------
-        // These are assumed to exist globally in your app:
-        // - hexFrom565(number) -> "#RRGGBB"
-        // - toggleBorderThickness()
-        // - sendLabelUpdate(target, value)
-        // - sendPositionUpdate()
-        // - labelIdToTarget (map of element id -> target key)
         if (typeof hexFrom565 !== 'function') warn('hexFrom565() not found');
         if (typeof toggleBorderThickness !== 'function') warn('toggleBorderThickness() not found');
         if (typeof sendLabelUpdate !== 'function') warn('sendLabelUpdate() not found');
@@ -768,6 +757,7 @@
             log('Fetching /config...');
             try {
                 const response = await fetch('/config');
+
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const config = await response.json();
                 console.groupCollapsed('📦 Config received');
@@ -790,18 +780,13 @@
                     return;
                 }
                 // Auto Page Change
-                if (els.autoPageChangeCheckbox) {
-                    els.autoPageChangeCheckbox.checked = !!config.autoPageChangeCheckbox;
-                    log('Auto Page Change set to', !!config.autoPageChangeCheckbox);
+                if (els.autoPageChange) {
+                    els.autoPageChange.checked = !!config.autoPageChange;
+                    log('Auto Page Change set to', !!config.autoPageChange);
                 }
                 // Inputs
                 if (els.latitudeInput) els.latitudeInput.value = config.latitude ?? '';
                 if (els.longitudeInput) els.longitudeInput.value = config.longitude ?? '';
-
-                // Labels
-                if (els.columnTitleLocalTime) els.columnTitleLocalTime.innerText = config.localTimeLabel ?? 'Local Time';
-                if (els.columnTitleUTCtime) els.columnTitleUTCtime.innerText = config.utcTimeLabel ?? 'UTC Time';
-                log('Labels updated');
 
                 // Font style
                 if (els.italicFontsBorderCheckbox) els.italicFontsBorderCheckbox.checked = !!config.italicClockFonts;
@@ -887,29 +872,6 @@
         };
 
         // ---------- Event wiring ----------
-        const wireEditableLabels = () => {
-            ['columnTitleLocalTime', 'columnTitleUTCtime'].forEach((id) => {
-                const el = els[id];
-                if (!el) return;
-                el.addEventListener('blur', () => {
-                    const value = el.innerText.trim();
-                    const target = (typeof labelIdToTarget !== 'undefined') ? labelIdToTarget[id] : null;
-                    if (!target) return warn('No target mapping for', id);
-                    if (value) {
-                        log(`Label blur -> sendLabelUpdate(${target}, "${value}")`);
-                        if (typeof sendLabelUpdate === 'function') sendLabelUpdate(target, value);
-                    }
-                });
-                el.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        log(`Enter pressed on #${id} -> blur()`);
-                        el.blur();
-                    }
-                });
-            });
-            log('Label events wired');
-        };
 
         const wirePositionInputs = () => {
             ['latitudeInput', 'longitudeInput'].forEach((key) => {
@@ -932,7 +894,7 @@
 
         // ---------- Run ----------
         (async () => {
-            wireEditableLabels();
+
             wirePositionInputs();
             await loadConfig();
             await loadScrollText();

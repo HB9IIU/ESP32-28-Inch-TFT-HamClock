@@ -305,9 +305,9 @@ void setup()
   doc["italicClockFonts"] = italicClockFonts;
 doc["screenSaverTimeout"] = screenSaverTimeout / 60000;  // convert ms → minutes
 doc ["APIkeyIsValid"] =APIkeyIsValid;
-doc ["autoPageChangeCheckbox"] =autoPageChange;
+doc ["autoPageChange"] =autoPageChange;
 
-Serial.print("HERE"); Serial.println(APIkeyIsValid);
+ Serial.println(APIkeyIsValid);
   String response;
   serializeJson(doc, response);
   server.send(200, "application/json", response); });
@@ -1211,7 +1211,7 @@ void loadSettings()
     startupLogo = doc["startupLogo"] | startupLogo;
     italicClockFonts = doc["italicClockFonts"] | italicClockFonts;
     screenSaverTimeout = doc["screenSaverTimeout"] | screenSaverTimeout;
-    autoPageChange = doc["screenSaverTimeout"] | autoPageChange;
+    autoPageChange = doc["autoPageChange"] | autoPageChange;
 
     Serial.println();
     Serial.println("-----------------------------------------------------------------");
@@ -1251,7 +1251,7 @@ void saveSettings()
     doc["utcTimeLabel"] = utcTimeLabel;
     doc["startupLogo"] = startupLogo;
     doc["italicClockFonts"] = italicClockFonts;
-    doc["autoPageChangeCheckbox"] = autoPageChange;
+    doc["autoPageChange"] = autoPageChange;
 
     fs::File file = SPIFFS.open("/settings.json", "w");
 
