@@ -839,6 +839,8 @@ void loop()
                 {
                     Serial.println("NTP update OK");
                     successFullTimeUpdate = true;
+                    tft.setTextColor(TFT_GREEN);
+                    tft.drawString(":", 151, 65, 1);
                 }
                 else
                 {
@@ -866,7 +868,7 @@ void loop()
 
                 LASTbigClockTimeStr = localTime;
             }
-            if (successFullTimeUpdate==false)
+            if (successFullTimeUpdate == false)
             {
                 tft.setTextColor(TFT_RED);
                 tft.drawString(":", 151, 65, 1);
