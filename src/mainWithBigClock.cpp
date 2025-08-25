@@ -1351,7 +1351,9 @@ void saveSettings()
 
 void handleRoot()
 {
-
+activePage=1;
+tft.fillScreen(TFT_BLACK);
+drawOrredrawStaticElements();
     fs::File file = SPIFFS.open("/index.html", "r"); // ✅ Declare 'file' properly here
     if (!file)
     {
@@ -1651,6 +1653,7 @@ void handleTouchToRotatePage()
              if (activePage == 7)
             {
                 LASTbigClockTimeStr = "";
+                tft.fillScreen(TFT_BLACK);
             }
         }
     }
