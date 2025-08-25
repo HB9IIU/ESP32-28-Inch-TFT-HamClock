@@ -41,7 +41,7 @@ static unsigned long nextDotDelay = random(1000, 2001); // for screen saver
 unsigned long currentMillis = millis();
 unsigned long lastActivity = 0;                    // Last time user interacted (for screensaver)
 unsigned long screenSaverTimeout = 1000 * 60 * 60; // 60 minute
- bool successFullTimeUpdate = false;
+bool successFullTimeUpdate = false;
 int tOffset = 0; // will be updated via configuration device time (Iphone) and later via API call that contains offset according to lat & lon
 Preferences prefs;
 // --- globals ---
@@ -132,7 +132,7 @@ String UTClastTimeStr = "        ";   // 8 characters: HH:MM:SS
 String LASTbigClockTimeStr = "";
 uint16_t LOCALdigitColor = TFT_LIGHTGREY;
 uint16_t UTCdigitColor = TFT_LIGHTGREY;
-bool blinkingDot = false;  // colons on Propagation page clocks
+bool blinkingDot = false; // colons on Propagation page clocks
 bool colonVisible = true; // global var used to show/hide colons on Propagation page clocks
 bool redrawMainPropagationPage = true;
 bool redrawSolarSummaryPage1 = true;
@@ -831,7 +831,7 @@ void loop()
             break;
         case 7:
             currentMillis = millis();
-           
+
             if (currentMillis - previousMillisForTimeClientUpdate >= 16000) // to not overflow
             {
                 // 🕒 Update time display
@@ -866,8 +866,13 @@ void loop()
 
                 LASTbigClockTimeStr = localTime;
             }
-
+            if (successFullTimeUpdate==false)
+            {
+                tft.setTextColor(TFT_RED);
+                tft.drawString(":", 151, 65, 1);
+            }
             // ⏱ Blink colon every second
+            /*
             currentMillis = millis();
             static bool colonVisible = true; // persists across loop calls
             if (currentMillis - previousMillisForBlinkDotsOnBigClock >= 1000)
@@ -882,6 +887,7 @@ void loop()
 
                 previousMillisForBlinkDotsOnBigClock = currentMillis;
             }
+                */
             break;
         }
 
@@ -1351,9 +1357,9 @@ void saveSettings()
 
 void handleRoot()
 {
-activePage=1;
-tft.fillScreen(TFT_BLACK);
-drawOrredrawStaticElements();
+    activePage = 1;
+    tft.fillScreen(TFT_BLACK);
+    drawOrredrawStaticElements();
     fs::File file = SPIFFS.open("/index.html", "r"); // ✅ Declare 'file' properly here
     if (!file)
     {
@@ -1650,7 +1656,7 @@ void handleTouchToRotatePage()
             {
                 reDrawWiFiQualityPage = true;
             }
-             if (activePage == 7)
+            if (activePage == 7)
             {
                 LASTbigClockTimeStr = "";
                 tft.fillScreen(TFT_BLACK);
