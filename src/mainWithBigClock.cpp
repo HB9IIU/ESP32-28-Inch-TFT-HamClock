@@ -1648,6 +1648,10 @@ void handleTouchToRotatePage()
             {
                 reDrawWiFiQualityPage = true;
             }
+             if (activePage == 7)
+            {
+                LASTbigClockTimeStr = "";
+            }
         }
     }
     else
