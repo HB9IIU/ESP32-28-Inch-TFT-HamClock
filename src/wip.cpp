@@ -40,7 +40,7 @@ static unsigned long lastDotUpdate = 0;                 // for screen saver
 static unsigned long nextDotDelay = random(1000, 2001); // for screen saver
 unsigned long currentMillis = millis();
 unsigned long lastActivity = 0;                    // Last time user interacted (for screensaver)
-unsigned long screenSaverTimeout = 1000 * 60 * 60; // 60 minute
+unsigned long screenSaverTimeout = 1000 * 60 * 60 *2; // 120 minute
 bool useScreenSaver = false;
 bool successFullTimeUpdate = false;
 int tOffset = 0; // will be updated via configuration device time (Iphone) and later via API call that contains offset according to lat & lon
@@ -699,7 +699,7 @@ void loop()
     // Check for inactivity → Enable screensaver
     if (!screenSaver && currentMillis - lastActivity > screenSaverTimeout)
     {
-        if (screenSaverTimeout != 120)
+        if (screenSaverTimeout != 7200000)
         {
             screenSaver = true;
             Serial.println("⏳ Inactivity detected — entering screensaver.");
