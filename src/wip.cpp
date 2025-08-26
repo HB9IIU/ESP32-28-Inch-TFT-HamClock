@@ -133,7 +133,7 @@ String formatUpdatedTimestampToUTC(const String &raw);
 
 String LOCALlastTimeStr = "        "; // 8 characters: HH:MM:SS
 String UTClastTimeStr = "        ";   // 8 characters: HH:MM:SS
-String LASTbigClockTimeStr = "88:88";
+String LASTbigClockTimeStr = "";
 uint16_t LOCALdigitColor = TFT_LIGHTGREY;
 uint16_t UTCdigitColor = TFT_LIGHTGREY;
 bool blinkingDot = false; // colons on Propagation page clocks
@@ -363,7 +363,7 @@ doc ["autoPageChange"] =autoPageChange;
         Serial.printf("🟩 bannerColour set to: 0x%04X\n", color);
     }      else if (target == "bigClockTime") {
         bigClockColour = color;
-        LASTbigClockTimeStr="88:88";
+        LASTbigClockTimeStr="";
 for (int i = 0; i < 4; i++) {
     bigClockLastDigit[i] = ' '; 
 }        Serial.printf("🟩 big clock color set to: 0x%04X\n", color); }
@@ -846,7 +846,7 @@ void loop()
             currentMillis = millis();
             tft.setFreeFont(&digits60pt7b);
 
-            if (currentMillis - previousMillisForTimeClientUpdate >= 16000 || LASTbigClockTimeStr == "88:88") // to not overflow
+            if (currentMillis - previousMillisForTimeClientUpdate >= 16000 || LASTbigClockTimeStr == "") // to not overflow
             {
                 // 🕒 Update time display
                 if (timeClient.update())
@@ -902,8 +902,6 @@ void loop()
                         bigClockLastDigit[i] = currentDigits[i];
                     }
                 }
-
-                // Update the stored full time string too
                 LASTbigClockTimeStr = localTime;
             }
             break;
@@ -1681,7 +1679,7 @@ void handleTouchToRotatePage()
             }
             if (activePage == 7)
             {
-                LASTbigClockTimeStr = "88:88";
+                LASTbigClockTimeStr = "";
                 for (int i = 0; i < 4; i++) {
     bigClockLastDigit[i] = ' '; 
 }   
