@@ -41,7 +41,7 @@ static unsigned long nextDotDelay = random(1000, 2001); // for screen saver
 unsigned long currentMillis = millis();
 unsigned long lastActivity = 0;                    // Last time user interacted (for screensaver)
 unsigned long screenSaverTimeout = 1000 * 60 * 60; // 60 minute
-bool successFullTimeUpdate = false;
+
 int tOffset = 0; // will be updated via configuration device time (Iphone) and later via API call that contains offset according to lat & lon
 Preferences prefs;
 // --- globals ---
@@ -129,10 +129,10 @@ String formatUpdatedTimestampToUTC(const String &raw);
 
 String LOCALlastTimeStr = "        "; // 8 characters: HH:MM:SS
 String UTClastTimeStr = "        ";   // 8 characters: HH:MM:SS
-String LASTbigClockTimeStr = "";
+String LASTbigClockTimeStr="";
 uint16_t LOCALdigitColor = TFT_LIGHTGREY;
 uint16_t UTCdigitColor = TFT_LIGHTGREY;
-bool blinkingDot = false; // colons on Propagation page clocks
+bool blinkingDot = true;  // colons on Propagation page clocks
 bool colonVisible = true; // global var used to show/hide colons on Propagation page clocks
 bool redrawMainPropagationPage = true;
 bool redrawSolarSummaryPage1 = true;
@@ -166,7 +166,7 @@ unsigned long previousMillisForScroller = 0; // Store last time the action was p
 
 // NTP Client Setup
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "pool.ntp.org", 0, 15000); // UTC offset and update interval
+NTPClient timeClient(ntpUDP, "pool.ntp.org", 0, 60000); // UTC offset and update interval
 
 // Function Prototypes
 void saveSettings();
@@ -234,6 +234,10 @@ void setup()
     tft.setRotation(3);
     tft.fillScreen(TFT_BLACK);
     Serial.println("TFT Display initialized!");
+    // Set datum to middle-center
+    tft.setFreeFont(&digits60pt7b);
+    tft.setTextColor(TFT_GOLD);
+    tft.drawString("20:35", 10, 65, 1);
 
     checkIfscreenIsTouchedDuringStartUpForFactoryReset();
     // 🔧 Mount SPIFFS
@@ -244,7 +248,7 @@ void setup()
     displayPNGfromSPIFFS(startupLogo.c_str(), 0);
     // BETA release display
     tft.setFreeFont(&JetBrainsMono_Bold11pt7b);
-    tft.setTextColor(TFT_GREEN);
+    tft.setTextColor(TFT_CYAN);
     tft.drawCentreString("Beta Pre-Release", 160, 210, 1);
 
     retrieveAPIkeyFromPref();
@@ -656,8 +660,6 @@ void loop()
     static unsigned long previousMillisForWiFiPageUpdate = 0;
     static unsigned long previousMillisForScroller = 0;
     static unsigned long previousMillisForAutoPageChanger = 0;
-    static unsigned long previousMillisForTimeClientUpdate = 0;
-    static unsigned long previousMillisForBlinkDotsOnBigClock = 0;
 
     static unsigned long lastDotUpdate = 0;
     static bool screenSaver = false;
@@ -830,25 +832,10 @@ void loop()
             }
             break;
         case 7:
-            currentMillis = millis();
 
-            if (currentMillis - previousMillisForTimeClientUpdate >= 16000) // to not overflow
-            {
-                // 🕒 Update time display
-                if (timeClient.update())
-                {
-                    Serial.println("NTP update OK");
-                    successFullTimeUpdate = true;
-                    tft.setTextColor(TFT_GREEN);
-                    tft.drawString(":", 151, 65, 1);
-                }
-                else
-                {
-                    Serial.println("NTP update FAILED");
-                    successFullTimeUpdate = false;
-                }
-                previousMillisForTimeClientUpdate = currentMillis;
-            }
+            // 🕒 Update time display
+            timeClient.update();
+            timeClient.update();
             long localEpoch = timeClient.getEpochTime() + (tOffset * 3600);
 
             struct tm *ptm = gmtime((time_t *)&localEpoch);
@@ -857,39 +844,15 @@ void loop()
                                String(ptm->tm_min < 10 ? "0" : "") + String(ptm->tm_min);
             tft.setFreeFont(&digits60pt7b);
 
-            if (localTime != LASTbigClockTimeStr)
-            {
-                tft.setTextColor(TFT_BLACK);
-                tft.drawString(LASTbigClockTimeStr, 5, 65, 1);
+if (localTime!=LASTbigClockTimeStr) {
+ tft.setTextColor(TFT_BLACK);
+            tft.drawString(LASTbigClockTimeStr, 5, 65, 1);
+ tft.setTextColor(TFT_GREEN);
+            tft.drawString(localTime, 5, 65, 1);
+            LASTbigClockTimeStr=localTime;
+}
+           
 
-                tft.setTextColor(TFT_GREEN);
-
-                tft.drawString(localTime, 5, 65, 1);
-
-                LASTbigClockTimeStr = localTime;
-            }
-            if (successFullTimeUpdate == false)
-            {
-                tft.setTextColor(TFT_RED);
-                tft.drawString(":", 151, 65, 1);
-            }
-            // ⏱ Blink colon every second
-            /*
-            currentMillis = millis();
-            static bool colonVisible = true; // persists across loop calls
-            if (currentMillis - previousMillisForBlinkDotsOnBigClock >= 1000)
-            {
-                colonVisible = !colonVisible; // toggle state
-
-                // Choose color based on last NTP update result
-                uint16_t colonColor = successFullTimeUpdate ? TFT_GREEN : TFT_RED;
-
-                tft.setTextColor(colonVisible ? colonColor : TFT_BLACK);
-                tft.drawString(":", 151, 65, 1);
-
-                previousMillisForBlinkDotsOnBigClock = currentMillis;
-            }
-                */
             break;
         }
 
@@ -1359,9 +1322,7 @@ void saveSettings()
 
 void handleRoot()
 {
-    activePage = 1;
-    tft.fillScreen(TFT_BLACK);
-    drawOrredrawStaticElements();
+
     fs::File file = SPIFFS.open("/index.html", "r"); // ✅ Declare 'file' properly here
     if (!file)
     {
@@ -1657,11 +1618,6 @@ void handleTouchToRotatePage()
             if (activePage == 6)
             {
                 reDrawWiFiQualityPage = true;
-            }
-            if (activePage == 7)
-            {
-                LASTbigClockTimeStr = "";
-                tft.fillScreen(TFT_BLACK);
             }
         }
     }
@@ -2503,8 +2459,8 @@ bool tryToConnectSavedWiFi()
             Serial.println(WiFi.localIP());
 
             // 👉 Override DNS after DHCP has completed
-            IPAddress dns2(8, 8, 8, 8);
-            IPAddress dns1(1, 1, 1, 1);
+            IPAddress dns1(8, 8, 8, 8);
+            IPAddress dns2(1, 1, 1, 1);
             if (!WiFi.config(WiFi.localIP(), WiFi.gatewayIP(), WiFi.subnetMask(), dns1, dns2))
             {
                 Serial.println("⚠️ Failed to set DNS servers.");

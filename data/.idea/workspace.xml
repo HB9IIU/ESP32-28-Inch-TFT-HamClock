@@ -8,7 +8,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7bb4de62-3902-4af5-9588-9ae6bb4b6afe" name="Changes" comment="" />
+    <list default="true" id="7bb4de62-3902-4af5-9588-9ae6bb4b6afe" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/mainWithBigClock.cpp" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -94,6 +98,7 @@
       <workItem from="1755608007213" duration="8905000" />
       <workItem from="1755682390352" duration="5038000" />
       <workItem from="1755942294709" duration="2390000" />
+      <workItem from="1756207620140" duration="5675000" />
     </task>
     <servers />
   </component>
@@ -105,8 +110,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/index.html</url>
-          <line>707</line>
-          <properties lambdaOrdinal="-1" />
+          <line>937</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
