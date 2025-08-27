@@ -78,7 +78,7 @@
                         // After toast finishes, redirect to index.html
                         setTimeout(() => {
                             window.location.href = "/";
-                        }, 2500);
+                        }, 6000);
                     })
                     .catch(() => {
                         statusMsg.innerText = "❌ Error saving key";
@@ -95,6 +95,11 @@
                 <div class="d-flex">
                     <div class="toast-body" style="font-family:'Orbitron',sans-serif;font-size:18px;text-align:center;">
                         ✅ API Key saved successfully!<br>
+
+                        <br>
+                        Wait for Device to Re-Start!<br>
+                                                <br>
+
                         Adapt your coordinates<br>
                         (latitude & longitude)
                     </div>

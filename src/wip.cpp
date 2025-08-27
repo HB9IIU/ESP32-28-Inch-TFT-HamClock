@@ -39,8 +39,8 @@ IPAddress apIP(192, 168, 4, 1);
 static unsigned long lastDotUpdate = 0;                 // for screen saver
 static unsigned long nextDotDelay = random(1000, 2001); // for screen saver
 unsigned long currentMillis = millis();
-unsigned long lastActivity = 0;                    // Last time user interacted (for screensaver)
-unsigned long screenSaverTimeout = 1000 * 60 * 60 *2; // 120 minute
+unsigned long lastActivity = 0;                        // Last time user interacted (for screensaver)
+unsigned long screenSaverTimeout = 1000 * 60 * 60 * 2; // 120 minute
 bool useScreenSaver = false;
 bool successFullTimeUpdate = false;
 int tOffset = 0; // will be updated via configuration device time (Iphone) and later via API call that contains offset according to lat & lon
@@ -248,9 +248,9 @@ void setup()
     // Display PNG from SPIFFS
     displayPNGfromSPIFFS(startupLogo.c_str(), 0);
     // BETA release display
-    tft.setFreeFont(&JetBrainsMono_Bold11pt7b);
-    tft.setTextColor(TFT_GREEN);
-    tft.drawCentreString("Beta Pre-Release", 160, 210, 1);
+    //tft.setFreeFont(&JetBrainsMono_Bold11pt7b);
+    //tft.setTextColor(TFT_GREEN);
+    //tft.drawCentreString("Beta Pre-Release", 160, 210, 1);
 
     retrieveAPIkeyFromPref();
     // apiKey="";
@@ -264,7 +264,7 @@ void setup()
     if (!tryToConnectSavedWiFi())
     {
         inAPmode = true;
-
+        
         startConfigurationPortal();
     }
 
@@ -1337,6 +1337,7 @@ void saveSettings()
     doc["autoPageChange"] = autoPageChange;
     doc["useScreenSaver"] = useScreenSaver;
     doc["bigClockColour"] = bigClockColour;
+    doc["screenSaverTimeout"] = screenSaverTimeout;
 
     fs::File file = SPIFFS.open("/settings.json", "w");
 
@@ -1680,9 +1681,10 @@ void handleTouchToRotatePage()
             if (activePage == 7)
             {
                 LASTbigClockTimeStr = "";
-                for (int i = 0; i < 4; i++) {
-    bigClockLastDigit[i] = ' '; 
-}   
+                for (int i = 0; i < 4; i++)
+                {
+                    bigClockLastDigit[i] = ' ';
+                }
                 tft.fillScreen(TFT_BLACK);
             }
         }
@@ -2543,6 +2545,8 @@ bool tryToConnectSavedWiFi()
     }
 
     Serial.println("\n❌ Failed to connect to saved WiFi.");
+  
+  WiFi.disconnect(true);
     startConfigurationPortal();
     return false;
 }
@@ -2666,8 +2670,8 @@ void handleSaveApiKey()
         prefs.putString("ow_api_key", apiKey);
         prefs.end();
         server.send(200, "text/plain", "API key saved");
-        fetchWeatherData();
-    }
+        delay(1000);
+        esp_restart();  }
     else
     {
         server.send(400, "text/plain", "Missing key");
